@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Josea\\Desktop\\RackDAT-api\\RackDAT-API\\RackDAT-API.csproj": {}
+    "C:\\Users\\Josea\\Desktop\\RackDAT-api\\RackDAT-API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Josea\\Desktop\\RackDAT-api\\RackDAT-API\\RackDAT-API.csproj": {
+    "C:\\Users\\Josea\\Desktop\\RackDAT-api\\RackDAT-API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Josea\\Desktop\\RackDAT-api\\RackDAT-API\\RackDAT-API.csproj",
+        "projectUniqueName": "C:\\Users\\Josea\\Desktop\\RackDAT-api\\RackDAT-API.csproj",
         "projectName": "RackDAT-API",
-        "projectPath": "C:\\Users\\Josea\\Desktop\\RackDAT-api\\RackDAT-API\\RackDAT-API.csproj",
+        "projectPath": "C:\\Users\\Josea\\Desktop\\RackDAT-api\\RackDAT-API.csproj",
         "packagesPath": "C:\\Users\\Josea\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Josea\\Desktop\\RackDAT-api\\RackDAT-API\\obj\\",
+        "outputPath": "C:\\Users\\Josea\\Desktop\\RackDAT-api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Josea\\AppData\\Roaming\\NuGet\\NuGet.Config",
