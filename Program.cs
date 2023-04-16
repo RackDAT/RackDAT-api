@@ -27,19 +27,18 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapPost("/carreras", async (
-    CreateCarrera request,
+    CreateCarreraRequest request,
     Supabase.Client client) =>
 {
-    var carrera = new Carrera
+    var carrera = new Carreras
     {
         carrera = request.carrera
     };
-
-    var response = await client.From<Carrera>().Insert(carrera);
+    var response = await client.From<Carreras>().Insert(carrera);
 
     var newCarrera = response.Models.First();
 
-    return Results.Ok("Se ha agregado correctamente la carrera: " + carrera.carrera + " con ID: " + carrera.ID);
+    return Results.Ok("Se ha agregado correctamente la carrera: " + carrera.carrera + " con ID: " + carrera.id);
 
 });
 
