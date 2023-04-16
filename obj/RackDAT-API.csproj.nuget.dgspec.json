@@ -47,6 +47,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.4.0, )"
+            },
+            "supabase-csharp": {
+              "target": "Package",
+              "version": "[0.8.8, )"
             }
           },
           "imports": [
