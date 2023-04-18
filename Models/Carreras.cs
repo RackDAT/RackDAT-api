@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 [Table("Carreras")]
 public class Carreras : BaseModel
 {
-    [PrimaryKey("id", false)]
+    [PrimaryKey("id_Carreras", false)]
     public int id { get; set; }
     [Required]
     public string carrera { get; set; }
