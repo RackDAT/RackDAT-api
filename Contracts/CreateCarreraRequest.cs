@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Postgrest.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace RackDAT_API.Contracts;
 public class CreateCarreraRequest
