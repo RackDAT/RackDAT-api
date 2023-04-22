@@ -2,10 +2,9 @@
 
 namespace RackDAT_API.Contracts
 {
-    public class CarreraResponse
+    public class UMResponse
     {
         public int id { get; set; }
-        public string carrera { get; set; }
+        public string unidadMedida { get; set; }
     }
-
 }

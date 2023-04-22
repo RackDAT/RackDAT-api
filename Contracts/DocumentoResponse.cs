@@ -2,10 +2,11 @@
 
 namespace RackDAT_API.Contracts
 {
-    public class CarreraResponse
+    public class DocumentoResponse
     {
         public int id { get; set; }
-        public string carrera { get; set; }
+        public string link { get; set; }
+        public string tipoDoc { get; set;}
     }
 
 }

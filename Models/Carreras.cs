@@ -8,6 +8,6 @@ public class Carreras : BaseModel
 {
     [PrimaryKey("id_Carreras", false)]
     public int id { get; set; }
-    [Required]
-    public string carrera { get; set; }
+    [Column("carrera"), Required]
+    public string nombre { get; set; }
 }

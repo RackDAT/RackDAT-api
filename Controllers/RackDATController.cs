@@ -21,14 +21,20 @@ namespace RackDAT_API.Controllers
         {
             var carrera = new Carreras
             {
-                carrera = request.carrera
+                nombre = request.nombre
             };
 
             var response = await _supabaseClient.From<Carreras>().Insert(carrera);
 
             var newCarrera = response.Models.First();
 
-            return Ok("Suputamadre soy un Dios");
+            var carreraResponse = new CarreraResponse
+            {
+                id = newCarrera.id,
+                carrera = newCarrera.nombre
+            };
+
+            return Ok(carreraResponse);
         }
         [HttpGet("id:int")]
         public async Task<IActionResult> Damelo(int id)
@@ -42,7 +48,7 @@ namespace RackDAT_API.Controllers
             var carreraResponse = new CarreraResponse
             {
                 id = carrera.id,
-                carrera = carrera.carrera
+                carrera = carrera.nombre
             };
             return Ok(carreraResponse);
         }
@@ -55,7 +61,7 @@ namespace RackDAT_API.Controllers
             var carrerasR = response.Models;
             if (carrerasR is null)
             {
-                return NotFound("Watafac");
+                return NotFound();
             }
             List<CarreraResponse> regresar = new List<CarreraResponse>();
             foreach(Carreras carrera in carrerasR)
@@ -63,7 +69,7 @@ namespace RackDAT_API.Controllers
                 regresar.Add(new CarreraResponse 
                     { 
                         id = carrera.id,
-                        carrera = carrera.carrera 
+                        carrera = carrera.nombre 
                     }
                 );
             }
