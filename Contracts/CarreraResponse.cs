@@ -7,5 +7,4 @@ namespace RackDAT_API.Contracts
         public int id { get; set; }
         public string carrera { get; set; }
     }
-
 }
