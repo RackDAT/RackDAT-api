@@ -4,10 +4,10 @@ using Postgrest.Models;
 using System.ComponentModel.DataAnnotations;
 
 [Table("Carreras")]
-public class Carreras : BaseModel
+public class Carrera : BaseModel
 {
-    [PrimaryKey("id_Carreras", false)]
-    public int id { get; set; }
+    [PrimaryKey("id_carrera", false)]
+    public int id_carrera { get; set; }
     [Required]
     public string carrera { get; set; }
 }
