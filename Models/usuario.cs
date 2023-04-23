@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RackDAT_API.Models
 {
-    public class usuario : BaseModel
+    public class Usuario : BaseModel
     {
         [PrimaryKey]
         public int id_usuario { get; set; }
