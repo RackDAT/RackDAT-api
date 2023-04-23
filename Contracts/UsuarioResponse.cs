@@ -8,8 +8,8 @@
         public string apellido_mat { get; set; }
         public string correo { get; set; }
         public string clave { get; set; }
-        public int tipoUsuario { get; set; }
-        public int carrera { get; set; }
+        public TipoUsuarioResponse tipo_usuario { get; set; }
+        public CarreraResponse carrera { get; set; }
 
     }
 

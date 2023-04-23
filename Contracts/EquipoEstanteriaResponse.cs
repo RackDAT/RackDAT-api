@@ -3,8 +3,8 @@
     public class EquipoEstanteriaResponse
     {
         public int id { get; set; }
-        public int equipo { get; set; }
-        public int estanteria { get; set; }
+        public EquipoResponse equipo { get; set; }
+        public EstanteriaResponse estanteria { get; set; }
 
     }
 }

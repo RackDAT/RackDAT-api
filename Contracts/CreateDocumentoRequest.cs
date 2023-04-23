@@ -7,6 +7,6 @@ public class CreateDocumentoRequest
     [Required]
     public string link { get; set; }
     [Required]
-    public int tipoDocs { get; set; }
+    public int tipo_doc { get; set; }
 
 }

@@ -7,12 +7,12 @@ namespace RackDAT_API.Contracts
         [Required]
         public DateTime fecha_actualizacion { get; set; }
         [Required]
-        public int tipo_Solicitud { get; set; }
+        public int tipo_solicitud { get; set; }
         [Required]
         public int usuario { get; set; }
         [Required]
         public int estatus { get; set; }
-        public string comentarios { get; set; }
+        public int comentario { get; set; }
 
     }
 }

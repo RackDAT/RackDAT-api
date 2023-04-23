@@ -2,8 +2,8 @@
 {
     public class ReactivoEstanteriaResponse
     {
-        public int estanteria { get; set; }
-        public int reactivo { get; set; }
+        public EstanteriaResponse estanteria { get; set; }
+        public ReactivoResponse reactivo { get; set; }
         public float cantidad { get; set; }
 
     }

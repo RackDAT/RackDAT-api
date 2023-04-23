@@ -6,7 +6,7 @@ namespace RackDAT_API.Contracts
     {
         public int id { get; set; }
         public string link { get; set; }
-        public string tipoDoc { get; set;}
+        public TipoDocumentoResponse tipo_doc { get; set;}
     }
 
 }

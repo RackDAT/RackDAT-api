@@ -6,6 +6,6 @@ namespace RackDAT_API.Contracts
     {
         public int id { get; set; }
         public string nombre { get; set; }
-        public string salon { get; set; }
+        public SalonResponse salon { get; set; }
     }
 }

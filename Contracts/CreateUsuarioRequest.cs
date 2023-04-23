@@ -14,7 +14,7 @@ namespace RackDAT_API.Contracts
         [Required]
         public string clave { get; set; }
         [Required]
-        public int tipoUsuario { get; set; }
+        public int tipo_usuario { get; set; }
         public int carrera { get; set; }
 
     }

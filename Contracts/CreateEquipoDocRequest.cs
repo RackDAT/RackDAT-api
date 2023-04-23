@@ -2,7 +2,7 @@
 
 namespace RackDAT_API.Contracts
 {
-    public class CreateEquipoDocsRequest
+    public class CreateEquipoDocRequest
     {
         [Required]
         public int documento { get; set; }

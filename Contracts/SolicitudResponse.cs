@@ -4,10 +4,10 @@
     {
         public int id { get; set; }
         public DateTime fecha_actualizacion { get; set; }
-        public int tipo_Solicitud { get; set; }
-        public int usuario { get; set; }
-        public int estatus { get; set; }
-        public string comentarios { get; set; }
+        public TipoSolicitudResponse tipo_solicitud { get; set; }
+        public UsuarioResponse usuario { get; set; }
+        public EstatusResponse estatus { get; set; }
+        public ComentariosResponse comentario { get; set; }
 
     }
 }

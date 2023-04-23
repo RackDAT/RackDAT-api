@@ -6,7 +6,7 @@ namespace RackDAT_API.Contracts
     {
         public int id { get; set; }
         public string modelo { get; set; }
-        public string proveedor { get; set; }
+        public ProveedoresResponse proveedor { get; set; }
     }
 
 }

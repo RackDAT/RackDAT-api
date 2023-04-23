@@ -8,4 +8,5 @@ namespace RackDAT_API.Contracts
         public string nombre { get; set; }
 
     }
+
 }

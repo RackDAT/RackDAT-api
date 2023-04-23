@@ -2,9 +2,9 @@
 {
     public class EquipoDocsResponse
     {
-        public int documento { get; set; }
+        public DocumentoResponse documento { get; set; }
 
-        public int equipo { get; set; }
+        public EquipoResponse equipo { get; set; }
 
     }
 }
