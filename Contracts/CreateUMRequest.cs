@@ -2,11 +2,9 @@
 
 namespace RackDAT_API.Contracts
 {
-    public class CreateCarreraRequest
+    public class CreateUMRequest
     {
         [Required]
-        public string nombre { get; set; }
-
+        public string unidad_medida { get; set; }
     }
-
 }

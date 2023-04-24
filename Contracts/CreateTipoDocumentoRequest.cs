@@ -2,11 +2,10 @@
 
 namespace RackDAT_API.Contracts
 {
-    public class CreateCarreraRequest
+    public class CreateTipoDocumentoRequest
     {
         [Required]
         public string nombre { get; set; }
 
     }
-
 }
