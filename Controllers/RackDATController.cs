@@ -19,12 +19,12 @@ namespace RackDAT_API.Controllers
         [HttpPost]
         public async Task<IActionResult> Ayuda(CreateCarreraRequest request)
         {
-            var carrera = new Carreras
+            var carrera = new Carrera
             {
                 nombre = request.nombre
             };
 
-            var response = await _supabaseClient.From<Carreras>().Insert(carrera);
+            var response = await _supabaseClient.From<Carrera>().Insert(carrera);
 
             var newCarrera = response.Models.First();
 
@@ -39,7 +39,7 @@ namespace RackDAT_API.Controllers
         [HttpGet("id:int")]
         public async Task<IActionResult> Damelo(int id)
         {
-            var response = await _supabaseClient.From<Carreras>().Where(n=>n.id == id).Get();
+            var response = await _supabaseClient.From<Carrera>().Where(n=>n.id == id).Get();
             var carrera = response.Models.FirstOrDefault();
             if(carrera is null)
             {
@@ -57,14 +57,14 @@ namespace RackDAT_API.Controllers
 
         public async Task<ActionResult<IEnumerable<CarreraResponse>>> DameloTodo()
         {
-            var response = await _supabaseClient.From<Carreras>().Get();
+            var response = await _supabaseClient.From<Carrera>().Get();
             var carrerasR = response.Models;
             if (carrerasR is null)
             {
                 return NotFound();
             }
             List<CarreraResponse> regresar = new List<CarreraResponse>();
-            foreach(Carreras carrera in carrerasR)
+            foreach(Carrera carrera in carrerasR)
             {
                 regresar.Add(new CarreraResponse 
                     { 
