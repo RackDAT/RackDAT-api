@@ -5,13 +5,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RackDAT_API.Models
 {
+    [Table("salon")]
     public class Salon : BaseModel
     {
-        [PrimaryKey]
-        public int id_salon { get; set; }
+        [PrimaryKey("id_salon", false)]
+        public int id { get; set; }
         [Required]
         public string salon { get; set; }
         [Required]
-        public string description { get; set; }
+        public string descripcion { get; set; }
+        [Required]
+        public string imagen { get; set; }
     }
 }

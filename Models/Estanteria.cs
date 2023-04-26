@@ -8,8 +8,8 @@ namespace RackDAT_API.Models
 {
     public class Estanteria
     {
-
-        public int id_estanteria { get; set; }
+        [PrimaryKey("id_estanteria", false)]
+        public int id { get; set; }
         [Required]
         public string estanteria { get; set; }
         public string color { get; set; }

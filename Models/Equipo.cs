@@ -8,8 +8,8 @@ namespace RackDAT_API.Models
 {
     public class Equipo
     {
-        [PrimaryKey("id_equipo")]
-        public int id_equipo { get; set; }
+        [PrimaryKey("id_equipo", false)]
+        public int id { get; set; }
         [Required]
         public string ns { get; set; }
         public string description { get; set; }

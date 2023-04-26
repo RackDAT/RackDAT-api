@@ -1,14 +1,16 @@
 ﻿using Postgrest.Attributes;
+using Postgrest.Attributes;
 using Postgrest.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace RackDAT_API.Models
 {
-    public class Proveedor : BaseModel
+    [Table("tipo_usuario")]
+    public class Tipo_Usuario :  BaseModel
     {
-        [PrimaryKey("id_proveedor", false)]
+        [PrimaryKey("id_tipo_usuario", false)]
         public int id { get; set; }
         [Required]
-        public string proveedor { get; set; }
+        public string tipo_usuario { get; set; }
     }
 }

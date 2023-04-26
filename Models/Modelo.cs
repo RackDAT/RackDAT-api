@@ -7,8 +7,8 @@ namespace RackDAT_API.Models
     public class Modelo : BaseModel
     {
 
-        [PrimaryKey]
-        public int id_modelo { get; set; }
+        [PrimaryKey("id_modelo", false)]
+        public int id { get; set; }
         [Required]
         public string modelo { get; set; }
         [Required]

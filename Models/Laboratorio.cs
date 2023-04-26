@@ -4,14 +4,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RackDAT_API.Models
 {
+    [Table("laboratorio")]
     public class Laboratorio : BaseModel
     {
 
-        [PrimaryKey]
-        public int id_laboratorio { get; set; }
+        [PrimaryKey("id_laboratorio", false)]
+        public int id { get; set; }
         [Required]
         public string laboratorio { get; set; }
-        [Required]
-        public int id_salon { get; set; }
+        [Required, Column("id_salon")]
+        public int salon { get; set; }
     }
 }

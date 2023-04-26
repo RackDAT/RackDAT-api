@@ -4,17 +4,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RackDAT_API.Models
 {
+    [Table("usuario")]
     public class Usuario : BaseModel
     {
-        [PrimaryKey]
-        public int id_usuario { get; set; }
+        [PrimaryKey("id_usuario", false)]
+        public int id { get; set; }
         [Required]
-        public string usuario { get; set; }
+        public string nombre { get; set; }
 
         [Required]
         public string apellido_pat { get; set; }
 
-        [Required]
         public string apellido_mat { get; set; }
 
         [Required]
@@ -28,7 +28,7 @@ namespace RackDAT_API.Models
 
         [Required]
         public int id_tipo_usuario { get; set; }
-
+        [Required]
         public int id_carrera { get; set; }
     }
 }
