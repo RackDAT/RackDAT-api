@@ -151,7 +151,7 @@ namespace RackDAT_API.Controllers
             if (newUsuario.id_carrera != null)
             {
                 //referencia otro endpoint
-                HttpResponseMessage carrera_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/carrera/id:int?id=" + newUsuario.id_carrera);
+                HttpResponseMessage carrera_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/carrera/id:int?id=" + newUsuario.id_carrera);
                 string carrera_contenido = await carrera_res.Content.ReadAsStringAsync();
                 carrera = JsonConvert.DeserializeObject<CarreraResponse>(carrera_contenido);
                 if(carrera == null)
@@ -160,7 +160,7 @@ namespace RackDAT_API.Controllers
                 }
             }
 
-            HttpResponseMessage tipo_usuario_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/tipo-usuario/id:int?id=" + newUsuario.id_tipo_usuario);
+            HttpResponseMessage tipo_usuario_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/tipo-usuario/id:int?id=" + newUsuario.id_tipo_usuario);
             string tipo_usuario_contenido = await tipo_usuario_res.Content.ReadAsStringAsync();
             tipo_usuario = JsonConvert.DeserializeObject<TipoUsuarioResponse>(tipo_usuario_contenido);
             if(tipo_usuario == null)
@@ -198,7 +198,7 @@ namespace RackDAT_API.Controllers
             TipoUsuarioResponse tipo_usuario = new TipoUsuarioResponse { };
 
             //referencia para sacar la carrera
-            HttpResponseMessage carrera_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/carrera/id:int?id=" + usuario.id_carrera);
+            HttpResponseMessage carrera_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/carrera/id:int?id=" + usuario.id_carrera);
             string carrera_contenido = await carrera_res.Content.ReadAsStringAsync();
             carrera = JsonConvert.DeserializeObject<CarreraResponse>(carrera_contenido);
             if (carrera == null)
@@ -207,7 +207,7 @@ namespace RackDAT_API.Controllers
             }
 
             //referencia para sacar el tipo de usuario
-            HttpResponseMessage tipo_usuario_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/tipo-usuario/id:int?id=" + usuario.id_tipo_usuario);
+            HttpResponseMessage tipo_usuario_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/tipo-usuario/id:int?id=" + usuario.id_tipo_usuario);
             string tipo_usuario_contenido = await tipo_usuario_res.Content.ReadAsStringAsync();
             tipo_usuario = JsonConvert.DeserializeObject<TipoUsuarioResponse>(tipo_usuario_contenido);
             if (tipo_usuario == null)
@@ -248,7 +248,7 @@ namespace RackDAT_API.Controllers
                 TipoUsuarioResponse tipo_usuario = new TipoUsuarioResponse { };
 
                 //referencia para sacar la carrera
-                HttpResponseMessage carrera_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/carrera/id:int?id=" + usuario.id_carrera);
+                HttpResponseMessage carrera_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/carrera/id:int?id=" + usuario.id_carrera);
                 string carrera_contenido = await carrera_res.Content.ReadAsStringAsync();
                 carrera = JsonConvert.DeserializeObject<CarreraResponse>(carrera_contenido);
                 if (carrera == null)
@@ -257,7 +257,7 @@ namespace RackDAT_API.Controllers
                 }
 
                 //referencia para sacar el tipo de usuario
-                HttpResponseMessage tipo_usuario_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/tipo-usuario/id:int?id=" + usuario.id_tipo_usuario);
+                HttpResponseMessage tipo_usuario_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/tipo-usuario/id:int?id=" + usuario.id_tipo_usuario);
                 string tipo_usuario_contenido = await tipo_usuario_res.Content.ReadAsStringAsync();
                 tipo_usuario = JsonConvert.DeserializeObject<TipoUsuarioResponse>(tipo_usuario_contenido);
                 if (tipo_usuario == null)
@@ -369,7 +369,7 @@ namespace RackDAT_API.Controllers
 
             //Get salon
             SalonResponse salon = new SalonResponse { };
-            HttpResponseMessage salon_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/salon/id:int?id=" + laboratorio.salon);
+            HttpResponseMessage salon_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/salon/id:int?id=" + laboratorio.salon);
             string salon_contenido = await salon_res.Content.ReadAsStringAsync();
             salon = JsonConvert.DeserializeObject<SalonResponse>(salon_contenido);
             if (salon == null)
@@ -400,7 +400,7 @@ namespace RackDAT_API.Controllers
             foreach (Laboratorio lab in lab_contenido)
             {
                 SalonResponse salon = new SalonResponse { };
-                HttpResponseMessage salon_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/salon/id:int?id=" + lab.salon);
+                HttpResponseMessage salon_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/salon/id:int?id=" + lab.salon);
                 string salon_contenido = await salon_res.Content.ReadAsStringAsync();
                 salon = JsonConvert.DeserializeObject<SalonResponse>(salon_contenido);
                 if (salon == null)
@@ -430,7 +430,7 @@ namespace RackDAT_API.Controllers
             }
 
             SalonResponse salon = new SalonResponse { };
-            HttpResponseMessage salon_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/salon/id:int?id=" + lab.salon);
+            HttpResponseMessage salon_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/salon/id:int?id=" + lab.salon);
             string salon_contenido = await salon_res.Content.ReadAsStringAsync();
             salon = JsonConvert.DeserializeObject<SalonResponse>(salon_contenido);
             if (salon == null)
@@ -470,7 +470,7 @@ namespace RackDAT_API.Controllers
             var newEquipo = response.Models.First();
 
             ModeloResponse modelo;
-            HttpResponseMessage modelo_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/modelo/id:int?id=" + equipo.modelo);
+            HttpResponseMessage modelo_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/modelo/id:int?id=" + equipo.modelo);
             string modelo_contenido = await modelo_res.Content.ReadAsStringAsync();
             modelo = JsonConvert.DeserializeObject<ModeloResponse>(modelo_contenido);
             if(modelo is null)
@@ -502,12 +502,12 @@ namespace RackDAT_API.Controllers
                 return NotFound("Equipo no encontrado");
             }
             ModeloResponse modelo;
-            HttpResponseMessage modelo_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/modelo/id:int?id=" + equipo.modelo);
+            HttpResponseMessage modelo_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/modelo/id:int?id=" + equipo.modelo);
             string modelo_contenido = await modelo_res.Content.ReadAsStringAsync();
             modelo = JsonConvert.DeserializeObject<ModeloResponse>(modelo_contenido);
             if (modelo == null)
             {
-                return BadRequest("Hubo un error al obtener el modelo");
+                return BadRequest(modelo_res);
             }
 
             var equipoResponse = new EquipoResponse
@@ -539,7 +539,7 @@ namespace RackDAT_API.Controllers
             foreach (Equipo equipo in equipoContenido)
             {
                 ModeloResponse modelo;
-                HttpResponseMessage modelo_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/modelo/id:int?id=" + equipo.modelo);
+                HttpResponseMessage modelo_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/modelo/id:int?id=" + equipo.modelo);
                 string modelo_contenido = await modelo_res.Content.ReadAsStringAsync();
                 modelo = JsonConvert.DeserializeObject<ModeloResponse>(modelo_contenido);
                 if (modelo == null)
@@ -583,7 +583,7 @@ namespace RackDAT_API.Controllers
             var newModelo = response.Models.First();
 
             ProveedorResponse proveedor;
-            HttpResponseMessage proveedor_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/proveedor/id:int?id=" + modelo.proveedor);
+            HttpResponseMessage proveedor_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/proveedor/id:int?id=" + modelo.proveedor);
             string proveedor_contenido = await proveedor_res.Content.ReadAsStringAsync();
             proveedor = JsonConvert.DeserializeObject<ProveedorResponse>(proveedor_contenido);
             if (proveedor == null)
@@ -611,7 +611,7 @@ namespace RackDAT_API.Controllers
                 return NotFound("Modelo no encontrada");
             }
             ProveedorResponse proveedor;
-            HttpResponseMessage proveedor_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/proveedor/id:int?id=" + modelo.proveedor);
+            HttpResponseMessage proveedor_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/proveedor/id:int?id=" + modelo.proveedor);
             string proveedor_contenido = await proveedor_res.Content.ReadAsStringAsync();
             proveedor = JsonConvert.DeserializeObject<ProveedorResponse>(proveedor_contenido);
             if (proveedor == null)
@@ -643,7 +643,7 @@ namespace RackDAT_API.Controllers
             foreach (Modelo modelo in modeloContenido)
             {
                 ProveedorResponse proveedor;
-                HttpResponseMessage proveedor_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/proveedor/id:int?id=" + modelo.proveedor);
+                HttpResponseMessage proveedor_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/proveedor/id:int?id=" + modelo.proveedor);
                 string proveedor_contenido = await proveedor_res.Content.ReadAsStringAsync();
                 proveedor = JsonConvert.DeserializeObject<ProveedorResponse>(proveedor_contenido);
                 if (proveedor == null)
