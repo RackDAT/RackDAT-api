@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RackDAT_API.Models
 {
+    [Table("proveedor")]
     public class Proveedor : BaseModel
     {
         [PrimaryKey("id_proveedor", false)]

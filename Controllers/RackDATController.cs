@@ -5,6 +5,7 @@ using RackDAT_API.Models;
 using Supabase;
 using System.Collections;
 using System.Net.Http;
+using System.Reflection;
 
 namespace RackDAT_API.Controllers
 {
@@ -12,6 +13,7 @@ namespace RackDAT_API.Controllers
     [ApiController]
     public class RackDATController : ControllerBase
     {
+
         private readonly Supabase.Client _supabaseClient;
         private readonly HttpClient _httpClient;
         public RackDATController(Supabase.Client supabaseClient)
@@ -182,6 +184,103 @@ namespace RackDAT_API.Controllers
             return Ok(usuarioResponse);
         }
 
+        [HttpGet("usuario/id:int")]
+        public async Task<ActionResult> getUsuarioID(int id)
+        {
+            var response = await _supabaseClient.From<Usuario>().Where(n => n.id == id).Get();
+            var usuario = response.Models.FirstOrDefault();
+            if (usuario is null)
+            {
+                return BadRequest("Hubo un error");
+            }
+
+            CarreraResponse carrera = new CarreraResponse { };
+            TipoUsuarioResponse tipo_usuario = new TipoUsuarioResponse { };
+
+            //referencia para sacar la carrera
+            HttpResponseMessage carrera_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/carrera/id:int?id=" + usuario.id_carrera);
+            string carrera_contenido = await carrera_res.Content.ReadAsStringAsync();
+            carrera = JsonConvert.DeserializeObject<CarreraResponse>(carrera_contenido);
+            if (carrera == null)
+            {
+                return BadRequest("Hubo un error");
+            }
+
+            //referencia para sacar el tipo de usuario
+            HttpResponseMessage tipo_usuario_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/tipo-usuario/id:int?id=" + usuario.id_tipo_usuario);
+            string tipo_usuario_contenido = await tipo_usuario_res.Content.ReadAsStringAsync();
+            tipo_usuario = JsonConvert.DeserializeObject<TipoUsuarioResponse>(tipo_usuario_contenido);
+            if (tipo_usuario == null)
+            {
+                return BadRequest("Hubo un error");
+            }
+
+            var usuarioResponse = new UsuarioResponse
+            {
+                id = usuario.id,
+                nombre = usuario.nombre,
+                apellido_pat = usuario.apellido_pat,
+                apellido_mat = usuario.apellido_mat,
+                correo = usuario.correo,
+                clave = usuario.clave,
+                tipo_usuario = tipo_usuario,
+                carrera = carrera,
+
+            };
+            return Ok(usuarioResponse);
+        }
+
+        [HttpGet("usuarios")]
+        public async Task<ActionResult> getUsuarios()
+        {
+            var response = await _supabaseClient.From<Usuario>().Get();
+            var usuario_contenido = response.Models;
+            if (usuario_contenido is null)
+            {
+                return NotFound("No hay usuarios por desplegar");
+            }
+
+            List<UsuarioResponse> usuarioResponse = new List<UsuarioResponse>();
+            foreach (Usuario usuario in usuario_contenido)
+            {
+
+                CarreraResponse carrera = new CarreraResponse { };
+                TipoUsuarioResponse tipo_usuario = new TipoUsuarioResponse { };
+
+                //referencia para sacar la carrera
+                HttpResponseMessage carrera_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/carrera/id:int?id=" + usuario.id_carrera);
+                string carrera_contenido = await carrera_res.Content.ReadAsStringAsync();
+                carrera = JsonConvert.DeserializeObject<CarreraResponse>(carrera_contenido);
+                if (carrera == null)
+                {
+                    return BadRequest("Hubo un error");
+                }
+
+                //referencia para sacar el tipo de usuario
+                HttpResponseMessage tipo_usuario_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/tipo-usuario/id:int?id=" + usuario.id_tipo_usuario);
+                string tipo_usuario_contenido = await tipo_usuario_res.Content.ReadAsStringAsync();
+                tipo_usuario = JsonConvert.DeserializeObject<TipoUsuarioResponse>(tipo_usuario_contenido);
+                if (tipo_usuario == null)
+                {
+                    return BadRequest("Hubo un error");
+                }
+
+                usuarioResponse.Add(new UsuarioResponse
+                    {
+                        id = usuario.id,
+                        nombre = usuario.nombre,
+                        apellido_pat = usuario.apellido_pat,
+                        apellido_mat = usuario.apellido_mat,
+                        correo = usuario.correo,
+                        clave = usuario.clave,
+                        tipo_usuario = tipo_usuario,
+                        carrera = carrera,
+                    }
+                );
+            }
+            return Ok(usuarioResponse);
+        }
+
         //-----------------------Salones Endpoints-------------------------------------------------------//
         [HttpPost("salon")]
         public async Task<IActionResult> postSalon(CreateSalonRequest request)
@@ -348,8 +447,291 @@ namespace RackDAT_API.Controllers
             return Ok(labResponse);
         }
 
-        //-------------------Pruebas-------------------------//
-        
+        //-----------------------Equipo Endpoints-------------------------------------------------------//
+
+        [HttpPost("equipo")]
+        public async Task<IActionResult> postEquipo(CreateEquipoRequest request)
+        {
+                       
+
+            var equipo = new Equipo
+            {
+                ns = request.num_serie,
+                descripcion = request.descripcion,
+                fecha_compra = request.fecha_compra,
+                tag = request.tag,
+                modelo = request.modelo,
+                imagen = request.imagen,
+                comentario = request.comentario,
+            };
+
+            var response = await _supabaseClient.From<Equipo>().Insert(equipo);
+
+            var newEquipo = response.Models.First();
+
+            ModeloResponse modelo;
+            HttpResponseMessage modelo_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/modelo/id:int?id=" + equipo.modelo);
+            string modelo_contenido = await modelo_res.Content.ReadAsStringAsync();
+            modelo = JsonConvert.DeserializeObject<ModeloResponse>(modelo_contenido);
+            if(modelo is null)
+            {
+                return BadRequest("Hubo un error al obtener el modelo");
+            }
+
+            var equipoResponse = new EquipoResponse
+            {
+                id = newEquipo.id,
+                modelo = modelo,
+                num_serie = newEquipo.ns,
+                descripcion = newEquipo.descripcion,
+                tag = newEquipo.tag,
+                imagen = newEquipo.imagen,
+                fecha_compra = newEquipo.fecha_compra,
+                comentario = newEquipo.comentario,
+            };
+
+            return Ok(equipoResponse);
+        }
+        [HttpGet("equipo/id:int")]
+        public async Task<IActionResult> getEquipoID(int id)
+        {
+            var response = await _supabaseClient.From<Equipo>().Where(n => n.id == id).Get();
+            var equipo = response.Models.FirstOrDefault();
+            if (equipo is null)
+            {
+                return NotFound("Equipo no encontrado");
+            }
+            ModeloResponse modelo;
+            HttpResponseMessage modelo_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/modelo/id:int?id=" + equipo.modelo);
+            string modelo_contenido = await modelo_res.Content.ReadAsStringAsync();
+            modelo = JsonConvert.DeserializeObject<ModeloResponse>(modelo_contenido);
+            if (modelo == null)
+            {
+                return BadRequest("Hubo un error al obtener el modelo");
+            }
+
+            var equipoResponse = new EquipoResponse
+            {
+                id = equipo.id,
+                num_serie = equipo.ns,
+                tag = equipo.tag,
+                modelo = modelo,
+                fecha_compra = equipo.fecha_compra,
+                descripcion = equipo.descripcion,
+                imagen = equipo.imagen,
+                comentario = equipo.comentario
+            };
+            return Ok(equipoResponse);
+        }
+
+        [HttpGet("equipos")]
+        public async Task<IActionResult> getEquipos()
+        {
+            var response = await _supabaseClient.From<Equipo>().Get();
+            var equipoContenido = response.Models;
+            if (equipoContenido is null)
+            {
+
+                return NotFound("No hay equipos por desplegar");
+            }
+
+            List<EquipoResponse> equipoResponse = new List<EquipoResponse>();
+            foreach (Equipo equipo in equipoContenido)
+            {
+                ModeloResponse modelo;
+                HttpResponseMessage modelo_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/modelo/id:int?id=" + equipo.modelo);
+                string modelo_contenido = await modelo_res.Content.ReadAsStringAsync();
+                modelo = JsonConvert.DeserializeObject<ModeloResponse>(modelo_contenido);
+                if (modelo == null)
+                {
+                    return BadRequest("Hubo un error al obtener el modelo");
+                }
+
+                equipoResponse.Add(new EquipoResponse
+                {
+                    id = equipo.id,
+                    num_serie = equipo.ns,
+                    tag = equipo.tag,
+                    modelo = modelo,
+                    fecha_compra = equipo.fecha_compra,
+                    descripcion = equipo.descripcion,
+                    imagen = equipo.imagen,
+                    comentario = equipo.comentario
+                }
+                );
+            }
+            return Ok(equipoResponse);
+        }
+
+        //-----------------------Modelo Endpoints-------------------------------------------------------//
+        [HttpPost("modelo")]
+        public async Task<IActionResult> postModelo(CreateModeloRequest request)
+        {
+            var comprobacion = await _supabaseClient.From<Modelo>().Where(n => n.modelo == request.modelo).Get();
+            if (comprobacion != null)
+            {
+                return BadRequest("Ese modelo ya se encuentra registrado");
+            }
+            var modelo = new Modelo
+            {
+                modelo = request.modelo,
+                proveedor = request.proveedor
+            };
+
+            var response = await _supabaseClient.From<Modelo>().Insert(modelo);
+
+            var newModelo = response.Models.First();
+
+            ProveedorResponse proveedor;
+            HttpResponseMessage proveedor_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/proveedor/id:int?id=" + modelo.proveedor);
+            string proveedor_contenido = await proveedor_res.Content.ReadAsStringAsync();
+            proveedor = JsonConvert.DeserializeObject<ProveedorResponse>(proveedor_contenido);
+            if (proveedor == null)
+            {
+                return BadRequest("Hubo un error");
+            }
+
+            var modeloResponse = new ModeloResponse
+            {
+                id = newModelo.id,
+                modelo = newModelo.modelo,
+                proveedor = proveedor
+            };
+
+            return Ok(modeloResponse);
+        }
+
+        [HttpGet("modelo/id:int")]
+        public async Task<IActionResult> getModeloID(int id)
+        {
+            var response = await _supabaseClient.From<Modelo>().Where(n => n.id == id).Get();
+            var modelo = response.Models.FirstOrDefault();
+            if (modelo is null)
+            {
+                return NotFound("Modelo no encontrada");
+            }
+            ProveedorResponse proveedor;
+            HttpResponseMessage proveedor_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/proveedor/id:int?id=" + modelo.proveedor);
+            string proveedor_contenido = await proveedor_res.Content.ReadAsStringAsync();
+            proveedor = JsonConvert.DeserializeObject<ProveedorResponse>(proveedor_contenido);
+            if (proveedor == null)
+            {
+                return BadRequest("Hubo un error");
+            }
+
+            var modeloRespoonse = new ModeloResponse
+            {
+                id = modelo.id,
+                modelo = modelo.modelo,
+                proveedor = proveedor
+            };
+            return Ok(modeloRespoonse);
+        }
+
+        [HttpGet("modelos")]
+        public async Task<IActionResult> getModelos()
+        {
+            var response = await _supabaseClient.From<Modelo>().Get();
+            var modeloContenido = response.Models;
+            if (modeloContenido is null)
+            {
+
+                return NotFound("No hay modelos por desplegar");
+            }
+
+            List<ModeloResponse> modeloResponse = new List<ModeloResponse>();
+            foreach (Modelo modelo in modeloContenido)
+            {
+                ProveedorResponse proveedor;
+                HttpResponseMessage proveedor_res = await _httpClient.GetAsync("https://localhost:7188/api/RackDAT/proveedor/id:int?id=" + modelo.proveedor);
+                string proveedor_contenido = await proveedor_res.Content.ReadAsStringAsync();
+                proveedor = JsonConvert.DeserializeObject<ProveedorResponse>(proveedor_contenido);
+                if (proveedor == null)
+                {
+                    return BadRequest("Hubo un error");
+                }
+
+                modeloResponse.Add(new ModeloResponse
+                {
+                    id = modelo.id,
+                    modelo = modelo.modelo,
+                    proveedor = proveedor
+                }
+                );
+            }
+            return Ok(modeloResponse);
+        }
+
+        //-----------------------Proveedor Endpoints-------------------------------------------------------//
+        [HttpPost("proveedor")]
+        public async Task<IActionResult> postProveedor(CreateProveedorRequest request)
+        {
+
+            var comprobacion = await _supabaseClient.From<Proveedor>().Where(n => n.proveedor == request.proveedor).Get();
+            if (comprobacion != null)
+            {
+                return BadRequest("Ese proveedor ya se encuentra registrado");
+            }
+
+            var proveedor = new Proveedor
+            {
+                proveedor = request.proveedor
+            };
+
+            var response = await _supabaseClient.From<Proveedor>().Insert(proveedor);
+
+            var newProveedor = response.Models.First();
+
+            var proveedorResponse = new ProveedorResponse
+            {
+                id = newProveedor.id,
+                proveedor = newProveedor.proveedor
+            };
+
+            return Ok(proveedorResponse);
+        }
+
+        [HttpGet("proveedor/id:int")]
+        public async Task<IActionResult> getProveedorID(int id)
+        {
+            var response = await _supabaseClient.From<Proveedor>().Where(n => n.id == id).Get();
+            var proveedor = response.Models.FirstOrDefault();
+            if (proveedor is null)
+            {
+                return NotFound("Proveedor no encontrado");
+            }
+            var proveedorResponse = new ProveedorResponse
+            {
+                id = proveedor.id,
+                proveedor = proveedor.proveedor
+            };
+            return Ok(proveedorResponse);
+        }
+
+        [HttpGet("proveedores")]
+        public async Task<IActionResult> getProveedor()
+        {
+            var response = await _supabaseClient.From<Proveedor>().Get();
+            var proveedorContenido = response.Models;
+            if (proveedorContenido is null)
+            {
+
+                return NotFound("No hay proveedores por desplegar");
+            }
+
+            List<ProveedorResponse> proveedorResponse = new List<ProveedorResponse>();
+            foreach (Proveedor proveedor in proveedorContenido)
+            {
+                proveedorResponse.Add(new ProveedorResponse
+                {
+                    id = proveedor.id,
+                    proveedor = proveedor.proveedor
+                }
+                );
+            }
+            return Ok(proveedorResponse);
+        }
+
 
     }
 

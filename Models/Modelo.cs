@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RackDAT_API.Models
 {
+    [Table("modelo")]
     public class Modelo : BaseModel
     {
 
@@ -11,7 +12,7 @@ namespace RackDAT_API.Models
         public int id { get; set; }
         [Required]
         public string modelo { get; set; }
-        [Required]
-        public int id_proveedor { get; set; }
+        [Required, Column("id_proveedor")]
+        public int proveedor { get; set; }
     }
 }

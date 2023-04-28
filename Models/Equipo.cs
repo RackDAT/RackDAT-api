@@ -2,26 +2,33 @@
 using Postgrest.Attributes;
 using Postgrest.Models;
 using System.ComponentModel.DataAnnotations;
-
+using Microsoft.VisualBasic;
+using Microsoft.AspNetCore.Components.Forms;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RackDAT_API.Models
 {
-    public class Equipo
+    [Table("equipo")]
+    public class Equipo : BaseModel
     {
         [PrimaryKey("id_equipo", false)]
         public int id { get; set; }
         [Required]
         public string ns { get; set; }
-        public string description { get; set; }
-        public DateOnly fecha_compra { get; set; }
+        [Required]
+        public string descripcion { get; set; }
+        [Required]
+        public DateOnly fecha_compra { get; set; } //tal vez?
 
         [Required]
         public string tag { get; set; }
 
+        [Required, Column("id_modelo")]
+        public int modelo { get; set; }
         [Required]
-        public int id_modelo { get; set; }
-
-        public int id_comentario { get; set; }
+        public string imagen { get; set;}
+        [AllowNull]
+        public string comentario { get; set; }
 
     }
 }

@@ -7,7 +7,7 @@ namespace RackDAT_API.Models
     public class Solicitud : BaseModel
     {
         [PrimaryKey("id_solicitud", false)]
-        public int id { get; set; }
+        public int folio { get; set; }
         public TimeOnly fecha_actualizacion { get; set; }
         [Required]
         public int id_usuaio { get; set; }
