@@ -4,6 +4,7 @@ using Supabase.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -19,7 +20,16 @@ builder.Services.AddScoped<Supabase.Client>(_ =>
             AutoRefreshToken = true,
             AutoConnectRealtime = true
         }));
-
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin() // or AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowAnyOrigin();
+    });
+});
 
 var app = builder.Build();
 
@@ -29,6 +39,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors();
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
