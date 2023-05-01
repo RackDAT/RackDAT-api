@@ -23,7 +23,7 @@ namespace RackDAT_API.Models
         [Required]
         public string clave { get; set; }
 
-        [Required]
+        [Required, Column("verificado")]
         public bool verificado { get; set; }
 
         [Required]

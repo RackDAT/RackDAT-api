@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using RackDAT_API.Contracts;
 using RackDAT_API.Models;
@@ -281,6 +282,55 @@ namespace RackDAT_API.Controllers
                     }
                 );
             }
+            return Ok(usuarioResponse);
+        }
+        [HttpPut("usuario/id:int")]
+        public async Task<ActionResult> verificarUsuario(int id, bool verificacion)
+        {
+            var update = await _supabaseClient.From<Usuario>().Where(n => n.id == id).Set(x => x.verificado, verificacion).Update();
+
+            var response = await _supabaseClient.From<Usuario>().Where(n => n.id == id).Get();
+            var usuario = response.Models.FirstOrDefault();
+            if (usuario is null)
+            {
+                return BadRequest("Hubo un error");
+            }
+
+
+
+            CarreraResponse carrera = new CarreraResponse { };
+            TipoUsuarioResponse tipo_usuario = new TipoUsuarioResponse { };
+
+            HttpResponseMessage carrera_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/carrera/id:int?id=" + usuario.id_carrera);
+            string carrera_contenido = await carrera_res.Content.ReadAsStringAsync();
+            carrera = JsonConvert.DeserializeObject<CarreraResponse>(carrera_contenido);
+            if (carrera == null)
+            {
+                return BadRequest("Hubo un error");
+            }
+
+            //referencia para sacar el tipo de usuario
+            HttpResponseMessage tipo_usuario_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/tipo-usuario/id:int?id=" + usuario.id_tipo_usuario);
+            string tipo_usuario_contenido = await tipo_usuario_res.Content.ReadAsStringAsync();
+            tipo_usuario = JsonConvert.DeserializeObject<TipoUsuarioResponse>(tipo_usuario_contenido);
+            if (tipo_usuario == null)
+            {
+                return BadRequest("Hubo un error");
+            }
+
+            var usuarioResponse = new UsuarioResponse
+            {
+                id = usuario.id,
+                nombre = usuario.nombre,
+                apellido_pat = usuario.apellido_pat,
+                apellido_mat = usuario.apellido_mat,
+                correo = usuario.correo,
+                clave = usuario.clave,
+                tipo_usuario = tipo_usuario,
+                carrera = carrera,
+                verificado = usuario.verificado
+
+            };
             return Ok(usuarioResponse);
         }
 
