@@ -177,7 +177,8 @@ namespace RackDAT_API.Controllers
                 correo = newUsuario.correo,
                 clave = newUsuario.clave,
                 tipo_usuario = tipo_usuario,
-                carrera = carrera
+                carrera = carrera,
+                verificado = newUsuario.verificado
             };
 
 
@@ -225,6 +226,7 @@ namespace RackDAT_API.Controllers
                 clave = usuario.clave,
                 tipo_usuario = tipo_usuario,
                 carrera = carrera,
+                verificado = usuario.verificado
 
             };
             return Ok(usuarioResponse);
@@ -275,6 +277,7 @@ namespace RackDAT_API.Controllers
                         clave = usuario.clave,
                         tipo_usuario = tipo_usuario,
                         carrera = carrera,
+                        verificado = usuario.verificado
                     }
                 );
             }
