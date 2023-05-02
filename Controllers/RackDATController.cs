@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RackDAT_API.Contracts;
 using RackDAT_API.Models;
 using Supabase;
@@ -284,6 +285,7 @@ namespace RackDAT_API.Controllers
             }
             return Ok(usuarioResponse);
         }
+
         [HttpPut("usuario/id:int")]
         public async Task<ActionResult> verificarUsuario(int id, bool verificacion)
         {
@@ -333,8 +335,24 @@ namespace RackDAT_API.Controllers
             };
             return Ok(usuarioResponse);
         }
+        [HttpDelete("usuario/id:int")]
+        public async Task<ActionResult> deleteUsuario(int id)
+        {
+            var response = await _supabaseClient.From<Usuario>().Where(n => n.id == id).Get();
+            var usuario = response.Models.FirstOrDefault();
+            if (usuario is null)
+            {
+                return BadRequest("Hubo un error");
+            }
+            if (usuario.verificado == true)
+            {
+                return BadRequest("No se puede borrar un usuario verificado");
+            }
+            await _supabaseClient.From<Usuario>().Where(n => n.id == id && n.verificado == false).Delete();
+            return NoContent();
+        }
 
-        //-----------------------Salones Endpoints-------------------------------------------------------//
+            //-----------------------Salones Endpoints-------------------------------------------------------//
         [HttpPost("salon")]
         public async Task<IActionResult> postSalon(CreateSalonRequest request)
         {
