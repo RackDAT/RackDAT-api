@@ -5,7 +5,9 @@ namespace RackDAT_API.Contracts
     public class CreateCarreraRequest
     {
         [Required]
-        public string nombre { get; set; }
+        public string carrera { get; set; }
+        [Required]
+        public string siglas { get; set;}
 
     }
 

@@ -1,13 +1,14 @@
-﻿namespace RackDAT_API.Models;
+﻿using System.ComponentModel.DataAnnotations;
 using Postgrest.Attributes;
 using Postgrest.Models;
 using System.ComponentModel.DataAnnotations;
 
-[Table("Comentarios")]
-public class Comentario : BaseModel
+namespace RackDAT_API.Models
 {
-    [PrimaryKey("id_Comentario", false)]
-    public int id { get; set; }
-    [Required]
-    public string comentario { get; set; }
+    public class Comentario : BaseModel
+    {
+        [Required]
+        public string comentario { get; set; }
+
+    }
 }

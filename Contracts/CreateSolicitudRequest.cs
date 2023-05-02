@@ -12,7 +12,7 @@ namespace RackDAT_API.Contracts
         public int usuario { get; set; }
         [Required]
         public int estatus { get; set; }
-        public int comentario { get; set; }
+        public string comentario { get; set; }
 
     }
 }
