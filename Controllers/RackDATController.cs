@@ -847,9 +847,10 @@ namespace RackDAT_API.Controllers
             var solicitud = new Solicitud
             {
                 fecha_actualizacion = DateTime.Now,
-                id_usuaio = request.usuario,
+                id_usuario = request.usuario,
                 comentario = request.comentario,
-                id_tipo_solicitud = request.tipo_solicitud
+                id_tipo_solicitud = request.tipo_solicitud,
+                id_estatus_solicitud = 3
             };
 
             var response = await _supabaseClient.From<Solicitud>().Insert(solicitud);
@@ -862,7 +863,7 @@ namespace RackDAT_API.Controllers
             tipo_solicitud = JsonConvert.DeserializeObject<TipoSolicitudResponse>(tipoSolicitudcontenido);
             if (tipo_solicitud == null)
             {
-                return BadRequest("Hubo un error");
+                return BadRequest("Hubo un error al recibir el tipo de solicitud");
             }
 
             EstatusResponse estatus;
@@ -871,16 +872,16 @@ namespace RackDAT_API.Controllers
             estatus = JsonConvert.DeserializeObject<EstatusResponse>(estatus_contenido);
             if (estatus == null)
             {
-                return BadRequest("Hubo un error");
+                return BadRequest("Hubo un error al recibir el estatus");
             }
 
             UsuarioResponse usuario;
-            HttpResponseMessage usuario_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/usuario/id:int?id=" + newSolicitud.id_usuaio);
+            HttpResponseMessage usuario_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/usuario/id:int?id=" + newSolicitud.id_usuario);
             string usuario_contenido = await usuario_res.Content.ReadAsStringAsync();
             usuario = JsonConvert.DeserializeObject<UsuarioResponse>(usuario_contenido);
             if (usuario == null)
             {
-                return BadRequest("Hubo un error");
+                return BadRequest("Hubo un error al recibir el usuario");
             }
 
             var solicitudResponse = new SolicitudResponse

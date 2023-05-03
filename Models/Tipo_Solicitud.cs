@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RackDAT_API.Models
 {
-    [Table("tipo_usuario")]
+    [Table("tipo_solicitud")]
     public class Tipo_Solicitud : BaseModel
     {
         [PrimaryKey("id_tipo_solicitud", false)]
