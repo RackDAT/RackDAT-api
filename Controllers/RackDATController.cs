@@ -802,8 +802,102 @@ namespace RackDAT_API.Controllers
             }
             return Ok(proveedorResponse);
         }
+        //-----------------------Tipo Solicitudes Endpoints-------------------------------------------------------//
+        [HttpGet("tipo-solicitud/id:int")]
+        public async Task<IActionResult> getTipoSolicitud(int id)
+        {
+            var response = await _supabaseClient.From<Tipo_Solicitud>().Where(n => n.id == id).Get();
+            var tipo_solicitud = response.Models.FirstOrDefault();
+            if (tipo_solicitud is null)
+            {
+                return NotFound("Tipo de solicitud no encontrado");
+            }
+            var tipo_SolicitudResponse = new TipoSolicitudResponse
+            {
+                id = tipo_solicitud.id,
+                tipo_solicitud = tipo_solicitud.tipo_solicitud
+            };
+            return Ok(tipo_SolicitudResponse);
+        }
+
+        //-----------------------Estatus Solicitudes Endpoints-------------------------------------------------------//
+        [HttpGet("estatus-solicitud/id:int")]
+        public async Task<IActionResult> getEstatusSolicitud(int id)
+        {
+            var response = await _supabaseClient.From<Estatus_Solicitud>().Where(n => n.id == id).Get();
+            var estatus_solicitud = response.Models.FirstOrDefault();
+            if (estatus_solicitud is null)
+            {
+                return NotFound("Estatus de solicitud no encontrado");
+            }
+            var estatus_solicitudResponse = new EstatusResponse
+            {
+                id = estatus_solicitud.id,
+                estatus = estatus_solicitud.estatus_solicitud
+            };
+            return Ok(estatus_solicitudResponse);
+        }
+
+        //-----------------------Solicitudes Endpoints-------------------------------------------------------//
+
+        [HttpPost("solicitud")]
+        public async Task<IActionResult> postSolicitud(CreateSolicitudRequest request)
+        {
+
+            var solicitud = new Solicitud
+            {
+                fecha_actualizacion = DateTime.Now,
+                id_usuaio = request.usuario,
+                comentario = request.comentario,
+                id_tipo_solicitud = request.tipo_solicitud
+            };
+
+            var response = await _supabaseClient.From<Solicitud>().Insert(solicitud);
+
+            var newSolicitud = response.Models.First();
+
+            TipoSolicitudResponse tipo_solicitud;
+            HttpResponseMessage tipoSolicitud_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/tipo-solicitud/id:int?id=" + newSolicitud.id_tipo_solicitud);
+            string tipoSolicitudcontenido = await tipoSolicitud_res.Content.ReadAsStringAsync();
+            tipo_solicitud = JsonConvert.DeserializeObject<TipoSolicitudResponse>(tipoSolicitudcontenido);
+            if (tipo_solicitud == null)
+            {
+                return BadRequest("Hubo un error");
+            }
+
+            EstatusResponse estatus;
+            HttpResponseMessage estatus_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/estatus-solicitud/id:int?id=" + newSolicitud.id_estatus_solicitud);
+            string estatus_contenido = await estatus_res.Content.ReadAsStringAsync();
+            estatus = JsonConvert.DeserializeObject<EstatusResponse>(estatus_contenido);
+            if (estatus == null)
+            {
+                return BadRequest("Hubo un error");
+            }
+
+            UsuarioResponse usuario;
+            HttpResponseMessage usuario_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/usuario/id:int?id=" + newSolicitud.id_usuaio);
+            string usuario_contenido = await usuario_res.Content.ReadAsStringAsync();
+            usuario = JsonConvert.DeserializeObject<UsuarioResponse>(usuario_contenido);
+            if (usuario == null)
+            {
+                return BadRequest("Hubo un error");
+            }
+
+            var solicitudResponse = new SolicitudResponse
+            {
+                id = newSolicitud.folio,
+                fecha_actualizacion = newSolicitud.fecha_actualizacion,
+                comentario = newSolicitud.comentario,
+                tipo_solicitud = tipo_solicitud,
+                estatus = estatus,
+                usuario = usuario,
+            };
+
+            return Ok(solicitudResponse);
+        }
 
 
     }
+
 
 }

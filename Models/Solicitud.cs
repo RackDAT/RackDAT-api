@@ -8,7 +8,7 @@ namespace RackDAT_API.Models
     {
         [PrimaryKey("id_solicitud", false)]
         public int folio { get; set; }
-        public TimeOnly fecha_actualizacion { get; set; }
+        public DateTime fecha_actualizacion { get; set; }
         [Required]
         public int id_usuaio { get; set; }
 
@@ -16,7 +16,7 @@ namespace RackDAT_API.Models
         public int id_estatus_solicitud { get; set; }
 
         [Required]
-        public int id_comentario { get; set; }
+        public string comentario { get; set; }
 
         [Required]
         public int id_tipo_solicitud { get; set; }
