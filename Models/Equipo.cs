@@ -18,7 +18,7 @@ namespace RackDAT_API.Models
         [Required]
         public string descripcion { get; set; }
         [Required]
-        public DateOnly fecha_compra { get; set; } //tal vez?
+        public DateOnly fecha_compra { get; set; }
 
         [Required]
         public string tag { get; set; }

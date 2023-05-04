@@ -10,8 +10,6 @@ namespace RackDAT_API.Contracts
         public int tipo_solicitud { get; set; }
         [Required]
         public int usuario { get; set; }
-        [Required]
-        public int estatus { get; set; }
         public string comentario { get; set; }
 
     }
