@@ -8,5 +8,6 @@ namespace RackDAT_API.Contracts
         public string lab { get; set; }
         public SalonResponse salon { get; set; }
         public string imagen { get; set; }
+        public string descripcion { get; set; }
     }
 }

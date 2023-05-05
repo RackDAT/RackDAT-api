@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RackDAT_API.Contracts;
@@ -431,7 +432,8 @@ namespace RackDAT_API.Controllers
             {
                 laboratorio = request.lab,
                 salon = request.salon,
-                imagen = request.imagen
+                imagen = request.imagen,
+                descripcion = request.descripcion
                 
             };
 
@@ -454,8 +456,8 @@ namespace RackDAT_API.Controllers
                 id = newLab.id,
                 lab = newLab.laboratorio,
                 salon = salon,
-                imagen = newLab.imagen
-
+                imagen = newLab.imagen,
+                descripcion = newLab.descripcion
             };
 
             return Ok(labResponse);
@@ -486,7 +488,8 @@ namespace RackDAT_API.Controllers
                     id = lab.id,
                     lab = lab.laboratorio,
                     salon = salon,
-                    imagen = lab.imagen
+                    imagen = lab.imagen,
+                    descripcion = lab.descripcion
                 }
                 );
             }
@@ -517,7 +520,8 @@ namespace RackDAT_API.Controllers
                 id = lab.id,
                 lab = lab.laboratorio,
                 salon = salon,
-                imagen = lab.imagen
+                imagen = lab.imagen,
+                descripcion = lab.descripcion
             };
             return Ok(labResponse);
         }
