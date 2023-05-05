@@ -430,7 +430,8 @@ namespace RackDAT_API.Controllers
             var laboratorio = new Laboratorio
             {
                 laboratorio = request.lab,
-                salon = request.salon
+                salon = request.salon,
+                imagen = request.imagen
                 
             };
 
@@ -452,7 +453,8 @@ namespace RackDAT_API.Controllers
             {
                 id = newLab.id,
                 lab = newLab.laboratorio,
-                salon = salon
+                salon = salon,
+                imagen = newLab.imagen
 
             };
 
@@ -483,7 +485,8 @@ namespace RackDAT_API.Controllers
                 {
                     id = lab.id,
                     lab = lab.laboratorio,
-                    salon = salon
+                    salon = salon,
+                    imagen = lab.imagen
                 }
                 );
             }
@@ -513,7 +516,8 @@ namespace RackDAT_API.Controllers
             {
                 id = lab.id,
                 lab = lab.laboratorio,
-                salon = salon
+                salon = salon,
+                imagen = lab.imagen
             };
             return Ok(labResponse);
         }
