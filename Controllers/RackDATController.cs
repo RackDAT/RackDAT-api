@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
@@ -26,7 +27,8 @@ namespace RackDAT_API.Controllers
         }
 
         //-----------------------Carreras Endpoints---------------------------------------------------//
-        [HttpPost ("carrera")]
+        [HttpPost("carrera")]
+        [Authorize]
         public async Task<IActionResult> postCarrera(CreateCarreraRequest request)
         {
             var carrera = new Carrera
@@ -953,6 +955,21 @@ namespace RackDAT_API.Controllers
                 var imagen_contenido = await _supabaseClient.Rpc("obtener_imagen", new Dictionary<string, object> { { "folio_input", folio }, { "tipo_solicitud_input", tipo_solicitud_int } });
                 var imagen_response = imagen_contenido.Content.Trim('"');
 
+                var cantidad_equipos = 0;
+
+                var nombre_lab = "";
+
+                if (solicitud.id_tipo_solicitud == 1)
+                {
+                    var cantidad_equipos_contenido = await _supabaseClient.Rpc("obtener_cantidad", new Dictionary<string, object> { { "folio_input", folio } });
+                    cantidad_equipos = int.Parse(cantidad_equipos_contenido.Content.Trim('"'));
+                }
+                else if(solicitud.id_tipo_solicitud == 3)
+                {
+                    var nombre_lab_contenido = await _supabaseClient.Rpc("obtener_lab", new Dictionary<string, object> { { "folio_input", folio } });
+                    nombre_lab = nombre_lab_contenido.Content.Trim('"');
+                }
+
                 sol_equipoResponse.Add(new SolicitudResponse
                 {
                     id = folio,
@@ -963,6 +980,8 @@ namespace RackDAT_API.Controllers
                     tipo_solicitud = tipo_solicitud,
                     estatus = estatus,
                     usuario = usuario,
+                    cantidad_equipos = cantidad_equipos,
+                    nombre_lab = nombre_lab
                 }
                 );
             }
