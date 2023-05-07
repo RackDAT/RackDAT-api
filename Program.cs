@@ -13,8 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
-    options.Authority = builder.Configuration["Auth0:Domain"];
-    options.Audience = builder.Configuration["Auth0:Audience"];
+    options.Authority = builder.Configuration["Domain"];
+    options.Audience = builder.Configuration["Audience"];
     options.TokenValidationParameters = new TokenValidationParameters
     {
         NameClaimType = ClaimTypes.NameIdentifier
@@ -53,7 +53,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("read:messages", policy => policy.Requirements.Add(new
-    HasScopeRequirement("read:messages", builder.Configuration["Auth0:Domain"])));
+    HasScopeRequirement("read:messages", builder.Configuration["Domain"])));
 });
 
 builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
