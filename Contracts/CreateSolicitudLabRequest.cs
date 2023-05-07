@@ -12,6 +12,8 @@ namespace RackDAT_API.Contracts
         public DateTime inicio { get; set; }
         [Required]
         public DateTime final { get; set; }
+        [Required]
+        public int cantidad_personas { get; set; }
 
     }
 }

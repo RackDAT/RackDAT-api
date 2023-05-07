@@ -5,8 +5,6 @@ namespace RackDAT_API.Contracts
     public class CreateSolicitudRequest
     {
         [Required]
-        public DateTime fecha_actualizacion { get; set; }
-        [Required]
         public int tipo_solicitud { get; set; }
         [Required]
         public int usuario { get; set; }
