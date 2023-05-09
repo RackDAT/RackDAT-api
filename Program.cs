@@ -1,4 +1,7 @@
+using Auth0.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using RackDAT_API.Models;
@@ -10,20 +13,8 @@ using System.Security.Claims;
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-.AddJwtBearer(options =>
-{
-    options.Authority = builder.Configuration["Domain"];
-    options.Audience = builder.Configuration["Audience"];
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        NameClaimType = ClaimTypes.NameIdentifier
-    };
-});
-
-
-
 builder.Services.AddControllers();
+builder.Services.AddControllersWithViews();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -50,13 +41,6 @@ builder.Services.AddCors(options =>
 });
 
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("read:messages", policy => policy.Requirements.Add(new
-    HasScopeRequirement("read:messages", builder.Configuration["Domain"])));
-});
-
-builder.Services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
 
 var app = builder.Build();
