@@ -523,7 +523,7 @@ namespace RackDAT_API.Controllers
                 laboratorio = request.lab,
                 salon = request.salon,
                 imagen = request.imagen,
-                descripcion = request.descripcion
+                descripcion_lab = request.descripcion
                 
             };
 
@@ -547,7 +547,7 @@ namespace RackDAT_API.Controllers
                 lab = newLab.laboratorio,
                 salon = salon,
                 imagen = newLab.imagen,
-                descripcion = newLab.descripcion
+                descripcion = newLab.descripcion_lab
             };
 
             return Ok(labResponse);
@@ -579,7 +579,7 @@ namespace RackDAT_API.Controllers
                     lab = lab.laboratorio,
                     salon = salon,
                     imagen = lab.imagen,
-                    descripcion = lab.descripcion
+                    descripcion = lab.descripcion_lab
                 }
                 );
             }
@@ -611,7 +611,7 @@ namespace RackDAT_API.Controllers
                 lab = lab.laboratorio,
                 salon = salon,
                 imagen = lab.imagen,
-                descripcion = lab.descripcion
+                descripcion = lab.descripcion_lab
             };
             return Ok(labResponse);
         }
@@ -632,6 +632,7 @@ namespace RackDAT_API.Controllers
                 modelo = request.modelo,
                 imagen = request.imagen,
                 comentario = request.comentario,
+                estanteria = request.estanteria
             };
 
             var response = await _supabaseClient.From<Equipo>().Insert(equipo);
@@ -657,6 +658,7 @@ namespace RackDAT_API.Controllers
                 imagen = newEquipo.imagen,
                 fecha_compra = newEquipo.fecha_compra,
                 comentario = newEquipo.comentario,
+                estanteria = newEquipo.estanteria
             };
 
             return Ok(equipoResponse);
@@ -688,7 +690,8 @@ namespace RackDAT_API.Controllers
                 fecha_compra = equipo.fecha_compra,
                 descripcion = equipo.descripcion,
                 imagen = equipo.imagen,
-                comentario = equipo.comentario
+                comentario = equipo.comentario,
+                estanteria = equipo.estanteria,
             };
             return Ok(equipoResponse);
         }
@@ -725,7 +728,8 @@ namespace RackDAT_API.Controllers
                     fecha_compra = equipo.fecha_compra,
                     descripcion = equipo.descripcion,
                     imagen = equipo.imagen,
-                    comentario = equipo.comentario
+                    comentario = equipo.comentario,
+                    estanteria = equipo.estanteria
                 }
                 );
             }
@@ -899,6 +903,104 @@ namespace RackDAT_API.Controllers
                 );
             }
             return Ok(proveedorResponse);
+        }
+        //-----------------------Estanterias Endpoints-------------------------------------------------------//
+        [HttpPost("estanteria")]
+        public async Task<IActionResult> postEstanteria(CreateEstanteriaRequest request)
+        {
+            var estanteria = new Estanteria
+            {
+                estanteria = request.localidad,
+                id_laboratorio = request.lab,
+                color = request.color
+            };
+
+            var response = await _supabaseClient.From<Estanteria>().Insert(estanteria);
+
+            var newEstanteria = response.Models.First();
+
+            LabResponse lab;
+            HttpResponseMessage lab_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/lab/id:int?id=" + newEstanteria.id_laboratorio);
+            string lab_contenido = await lab_res.Content.ReadAsStringAsync();
+            lab = JsonConvert.DeserializeObject<LabResponse>(lab_contenido);
+            if (lab.descripcion == null)
+            {
+                return BadRequest("Hubo un error al recibir el laboratorio");
+            }
+
+            var estanteriaResponse = new EstanteriaResponse
+            {
+                id = newEstanteria.id,
+                localidad = newEstanteria.estanteria,
+                color = newEstanteria.color,
+                lab = lab
+            };
+
+            return Ok(estanteriaResponse);
+        }
+
+        [HttpGet("estanteria/id:int")]
+        public async Task<IActionResult> getEstanteriaID(int id)
+        {
+            var response = await _supabaseClient.From<Estanteria>().Where(n => n.id == id).Get();
+            var estanteria = response.Models.FirstOrDefault();
+            if (estanteria is null)
+            {
+                return NotFound("Estanteria no encontrada");
+            }
+
+            LabResponse lab;
+            HttpResponseMessage lab_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/lab/id:int?id=" + estanteria.id_laboratorio);
+            string lab_contenido = await lab_res.Content.ReadAsStringAsync();
+            lab = JsonConvert.DeserializeObject<LabResponse>(lab_contenido);
+            if (lab.descripcion == null)
+            {
+                return BadRequest("Hubo un error al recibir el laboratorio");
+            }
+
+            var estanteriaResponse = new EstanteriaResponse
+            {
+                id = estanteria.id,
+                localidad = estanteria.estanteria,
+                color = estanteria.color,
+                lab = lab
+            };
+            return Ok(estanteriaResponse);
+        }
+
+        [HttpGet("estanterias")]
+        public async Task<IActionResult> getEstanterias()
+        {
+            var response = await _supabaseClient.From<Estanteria>().Get();
+            var estanteriaContenido = response.Models;
+            if (estanteriaContenido is null)
+            {
+
+                return NotFound("No hay estanterias por desplegar");
+            }
+
+            List<EstanteriaResponse> estanteriaResponse = new List<EstanteriaResponse>();
+            foreach (Estanteria estanteria in estanteriaContenido)
+            {
+                LabResponse lab;
+                HttpResponseMessage lab_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/lab/id:int?id=" + estanteria.id_laboratorio);
+                string lab_contenido = await lab_res.Content.ReadAsStringAsync();
+                lab = JsonConvert.DeserializeObject<LabResponse>(lab_contenido);
+                if (lab == null)
+                {
+                    return BadRequest("Hubo un error al recibir el laboratorio");
+                }
+
+                estanteriaResponse.Add(new EstanteriaResponse
+                {
+                    id = estanteria.id,
+                    localidad = estanteria.estanteria,
+                    color = estanteria.color,
+                    lab = lab
+                }
+                );
+            }
+            return Ok(estanteriaResponse);
         }
         //-----------------------Tipo Solicitudes Endpoints-------------------------------------------------------//
         [HttpGet("tipo-solicitud/id:int")]

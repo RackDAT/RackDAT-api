@@ -15,5 +15,6 @@ public class EquipoResponse
     public DateOnly fecha_compra { get; set; }
     public string descripcion { get; set; }
     public string imagen { get; set; }
+    public int estanteria { get; set; }
 
 }
