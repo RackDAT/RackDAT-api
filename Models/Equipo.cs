@@ -30,7 +30,7 @@ namespace RackDAT_API.Models
         [AllowNull]
         public string comentario { get; set; }
         [Required]
-        public int estanteria { get; set; }
+        public int id_estanteria { get; set; }
 
     }
 }

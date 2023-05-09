@@ -632,7 +632,7 @@ namespace RackDAT_API.Controllers
                 modelo = request.modelo,
                 imagen = request.imagen,
                 comentario = request.comentario,
-                estanteria = request.estanteria
+                id_estanteria = request.estanteria
             };
 
             var response = await _supabaseClient.From<Equipo>().Insert(equipo);
@@ -648,6 +648,15 @@ namespace RackDAT_API.Controllers
                 return BadRequest("Hubo un error al obtener el modelo");
             }
 
+            EstanteriaResponse estanteria;
+            HttpResponseMessage estanteria_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/estanteria/id:int?id=" + equipo.id_estanteria);
+            string estanteria_contenido = await estanteria_res.Content.ReadAsStringAsync();
+            estanteria = JsonConvert.DeserializeObject<EstanteriaResponse>(estanteria_contenido);
+            if (estanteria == null)
+            {
+                return BadRequest("Hubo un error al obtener la estanteria");
+            }
+
             var equipoResponse = new EquipoResponse
             {
                 id = newEquipo.id,
@@ -658,7 +667,7 @@ namespace RackDAT_API.Controllers
                 imagen = newEquipo.imagen,
                 fecha_compra = newEquipo.fecha_compra,
                 comentario = newEquipo.comentario,
-                estanteria = newEquipo.estanteria
+                estanteria = estanteria
             };
 
             return Ok(equipoResponse);
@@ -681,6 +690,15 @@ namespace RackDAT_API.Controllers
                 return BadRequest(modelo_res);
             }
 
+            EstanteriaResponse estanteria;
+            HttpResponseMessage estanteria_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/estanteria/id:int?id=" + equipo.id_estanteria);
+            string estanteria_contenido = await estanteria_res.Content.ReadAsStringAsync();
+            estanteria = JsonConvert.DeserializeObject<EstanteriaResponse>(estanteria_contenido);
+            if (estanteria == null)
+            {
+                return BadRequest("Hubo un error al obtener la estanteria");
+            }
+
             var equipoResponse = new EquipoResponse
             {
                 id = equipo.id,
@@ -691,7 +709,7 @@ namespace RackDAT_API.Controllers
                 descripcion = equipo.descripcion,
                 imagen = equipo.imagen,
                 comentario = equipo.comentario,
-                estanteria = equipo.estanteria,
+                estanteria = estanteria,
             };
             return Ok(equipoResponse);
         }
@@ -719,6 +737,15 @@ namespace RackDAT_API.Controllers
                     return BadRequest("Hubo un error al obtener el modelo");
                 }
 
+                EstanteriaResponse estanteria;
+                HttpResponseMessage estanteria_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/estanteria/id:int?id=" + equipo.id_estanteria);
+                string estanteria_contenido = await estanteria_res.Content.ReadAsStringAsync();
+                estanteria = JsonConvert.DeserializeObject<EstanteriaResponse>(estanteria_contenido);
+                if (estanteria == null)
+                {
+                    return BadRequest("Hubo un error al obtener la estanteria");
+                }
+
                 equipoResponse.Add(new EquipoResponse
                 {
                     id = equipo.id,
@@ -729,7 +756,7 @@ namespace RackDAT_API.Controllers
                     descripcion = equipo.descripcion,
                     imagen = equipo.imagen,
                     comentario = equipo.comentario,
-                    estanteria = equipo.estanteria
+                    estanteria = estanteria
                 }
                 );
             }
