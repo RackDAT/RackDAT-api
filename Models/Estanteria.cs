@@ -6,7 +6,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RackDAT_API.Models
 {
-    public class Estanteria
+    [Table("estanteria")]
+    public class Estanteria : BaseModel
     {
         [PrimaryKey("id_estanteria", false)]
         public int id { get; set; }

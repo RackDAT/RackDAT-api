@@ -29,6 +29,8 @@ namespace RackDAT_API.Models
         public string imagen { get; set;}
         [AllowNull]
         public string comentario { get; set; }
+        [Required]
+        public int id_estanteria { get; set; }
 
     }
 }

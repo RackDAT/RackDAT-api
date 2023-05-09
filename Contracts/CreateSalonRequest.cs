@@ -9,8 +9,6 @@ namespace RackDAT_API.Contracts
 
         [Required]
         public string descripcion { get; set; }
-        [Required]
-        public string imagen { get; set; }
 
     }
 }

@@ -7,6 +7,5 @@ namespace RackDAT_API.Contracts
         public int id { get; set; }
         public string salon { get; set; }
         public string descripcion { get; set; }
-        public string imagen { get; set; }
     }
 }

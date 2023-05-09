@@ -18,6 +18,6 @@ namespace RackDAT_API.Models
         [Required]
         public string imagen { get;set; }
         [Required]
-        public string descripcion { get; set; }
+        public string descripcion_lab { get; set; }
     }
 }

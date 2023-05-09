@@ -21,5 +21,7 @@ public class CreateEquipoRequest
     public string imagen { get; set; }
     [AllowNull]
     public string comentario { get; set; }
+    [Required]
+    public int estanteria { get; set; }
 
 }

@@ -14,7 +14,5 @@ namespace RackDAT_API.Models
         public string salon { get; set; }
         [Required]
         public string descripcion { get; set; }
-        [Required]
-        public string imagen { get; set; }
     }
 }
