@@ -16,7 +16,7 @@ namespace RackDAT_API.Models
         [Required]
         public int id_usuario { get; set; }
 
-        [Required]
+        [Required, Column("id_estatus_solicitud")]
         public int id_estatus_solicitud { get; set; }
 
         [Required]
