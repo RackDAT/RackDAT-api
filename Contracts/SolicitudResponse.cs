@@ -3,8 +3,9 @@
     public class SolicitudResponse
     {
         public int id { get; set; }
-        public DateTime fecha_actualizacion { get; set; }
         public DateTime fecha_pedido { get; set; }
+        public DateTime fecha_salida { get; set; }
+        public DateTime fecha_vuelta { get; set; }
         public TipoSolicitudResponse tipo_solicitud { get; set; }
         public UsuarioResponse usuario { get; set; }
         public EstatusResponse estatus { get; set; }
@@ -13,6 +14,7 @@
         public int cantidad_equipos { get; set; }
         public LabResponse lab { get; set; }
         public List<EquipoResponse> equipos { get; set; }
+        public int cantidad_personas { get; set; }
 
     }
 }

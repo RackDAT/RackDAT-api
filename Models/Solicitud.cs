@@ -9,7 +9,6 @@ namespace RackDAT_API.Models
     {
         [PrimaryKey("id_solicitud", false)]
         public int folio { get; set; }
-        public DateTime fecha_actualizacion { get; set; }
         [Column("fecha_pedido")]
         public DateTime fecha_pedido { get; set; }
 
