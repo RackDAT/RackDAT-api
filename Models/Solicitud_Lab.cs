@@ -2,17 +2,21 @@
 using Postgrest.Attributes;
 using Postgrest.Models;
 using System.ComponentModel.DataAnnotations;
+
 namespace RackDAT_API.Models
 {
-    [Table("solicitud_equipo")]
-    public class Solicitud_Equipo : BaseModel
+    [Table("solicitud_laboratorio")]
+    public class Solicitud_Lab : BaseModel
     {
-        [PrimaryKey("id_solicitud", false)]
+        [Column("id_solicitud")]
         public int folio { get; set; }
-        [PrimaryKey("id_equipo", false)]
-        public int equipo { get; set; }
+        [Column("id_laboratorio")]
+        public int laboratorio { get; set; }
+        [Column("fecha_inicio")]
         public DateTime fecha_salida { get; set; }
+        [Column("fecha_final")]
         public DateTime fecha_vuelta { get; set; }
+        public int cantidad_personas { get; set; }
 
     }
 }

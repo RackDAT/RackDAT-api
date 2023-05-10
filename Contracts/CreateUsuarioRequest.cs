@@ -17,6 +17,8 @@ namespace RackDAT_API.Contracts
         public int tipo_usuario { get; set; }
         [Required]
         public int carrera { get; set; }
+        [Required]
+        public string imagen { get; set; }
 
     }
 }

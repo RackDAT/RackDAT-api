@@ -16,6 +16,7 @@ using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
 using Microsoft.OpenApi.Models;
+using System.Net;
 
 namespace RackDAT_API.Controllers
 {
@@ -130,6 +131,7 @@ namespace RackDAT_API.Controllers
                 clave = request.clave,
                 id_tipo_usuario = request.tipo_usuario,
                 id_carrera = request.carrera,
+                imagen = request.imagen
             };
 
             //Comprobacion que el correo y la clave no esten en uso
@@ -189,7 +191,8 @@ namespace RackDAT_API.Controllers
                 clave = newUsuario.clave,
                 tipo_usuario = tipo_usuario,
                 carrera = carrera,
-                verificado = newUsuario.verificado
+                verificado = newUsuario.verificado,
+                imagen = newUsuario.imagen
             };
 
 
@@ -237,20 +240,21 @@ namespace RackDAT_API.Controllers
                 clave = usuario.clave,
                 tipo_usuario = tipo_usuario,
                 carrera = carrera,
-                verificado = usuario.verificado
+                verificado = usuario.verificado,
+                imagen = usuario.imagen
 
             };
             return Ok(usuarioResponse);
         }
 
-        [HttpGet("usuario")] //usuario por correo
-        public async Task<ActionResult> getUsuarioCorreo(string correo)
+        [HttpPost("usuario/correo")] //usuario por correo
+        public async Task<ActionResult> getUsuarioCorreo(CorreoRequest request)
         {
-            var response = await _supabaseClient.From<Usuario>().Where(n => n.correo == correo).Get();
+            var response = await _supabaseClient.From<Usuario>().Where(n => n.correo == request.correo).Get();
             var usuario = response.Models.FirstOrDefault();
             if (usuario is null)
             {
-                return NotFound("No hay usuario registrado con este usuario");
+                return NoContent();
             }
 
             CarreraResponse carrera = new CarreraResponse { };
@@ -284,7 +288,8 @@ namespace RackDAT_API.Controllers
                 clave = usuario.clave,
                 tipo_usuario = tipo_usuario,
                 carrera = carrera,
-                verificado = usuario.verificado
+                verificado = usuario.verificado,
+                imagen = usuario.imagen
 
             };
             return Ok(usuarioResponse);
@@ -326,17 +331,18 @@ namespace RackDAT_API.Controllers
                 }
 
                 usuarioResponse.Add(new UsuarioResponse
-                    {
-                        id = usuario.id,
-                        nombre = usuario.nombre,
-                        apellido_pat = usuario.apellido_pat,
-                        apellido_mat = usuario.apellido_mat,
-                        correo = usuario.correo,
-                        clave = usuario.clave,
-                        tipo_usuario = tipo_usuario,
-                        carrera = carrera,
-                        verificado = usuario.verificado
-                    }
+                {
+                    id = usuario.id,
+                    nombre = usuario.nombre,
+                    apellido_pat = usuario.apellido_pat,
+                    apellido_mat = usuario.apellido_mat,
+                    correo = usuario.correo,
+                    clave = usuario.clave,
+                    tipo_usuario = tipo_usuario,
+                    carrera = carrera,
+                    verificado = usuario.verificado,
+                    imagen = usuario.imagen
+                }
                 );
             }
             return Ok(usuarioResponse);
@@ -353,8 +359,6 @@ namespace RackDAT_API.Controllers
             {
                 return BadRequest("Hubo un error");
             }
-
-
 
             CarreraResponse carrera = new CarreraResponse { };
             TipoUsuarioResponse tipo_usuario = new TipoUsuarioResponse { };
@@ -386,7 +390,8 @@ namespace RackDAT_API.Controllers
                 clave = usuario.clave,
                 tipo_usuario = tipo_usuario,
                 carrera = carrera,
-                verificado = usuario.verificado
+                verificado = usuario.verificado,
+                imagen = usuario.imagen
 
             };
             return Ok(usuarioResponse);
@@ -460,6 +465,8 @@ namespace RackDAT_API.Controllers
 
                 var nombre_lab = "";
 
+                LabResponse lab = new LabResponse { };
+
                 if (solicitud.id_tipo_solicitud == 1)
                 {
                     var cantidad_equipos_contenido = await _supabaseClient.Rpc("obtener_cantidad", new Dictionary<string, object> { { "folio_input", folio } });
@@ -467,28 +474,34 @@ namespace RackDAT_API.Controllers
                 }
                 else if (solicitud.id_tipo_solicitud == 3)
                 {
-                    var nombre_lab_contenido = await _supabaseClient.Rpc("obtener_lab", new Dictionary<string, object> { { "folio_input", folio } });
-                    nombre_lab = nombre_lab_contenido.Content.Trim('"');
+                    var lab_id = await _supabaseClient.Rpc("obtener_lab", new Dictionary<string, object> { { "folio_input", folio } });
+                    HttpResponseMessage lab_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/lab/id:int?id=" + lab_id);
+                    string lab_contenido = await lab_res.Content.ReadAsStringAsync();
+                    lab = JsonConvert.DeserializeObject<LabResponse>(lab_contenido);
+                    if (lab == null)
+                    {
+                        return BadRequest("Hubo un error al recibir el laboratorio");
+                    }
                 }
 
                 sol_equipoResponse.Add(new SolicitudResponse
                 {
                     id = folio,
                     fecha_pedido = solicitud.fecha_pedido,
-                    fecha_actualizacion = solicitud.fecha_actualizacion,
                     comentario = solicitud.comentario,
                     imagen_muestra = imagen_response,
                     tipo_solicitud = tipo_solicitud,
                     estatus = estatus,
                     usuario = usuario,
                     cantidad_equipos = cantidad_equipos,
-                    nombre_lab = nombre_lab
+                    lab = lab
                 }
                 );
             }
             return Ok(sol_equipoResponse);
 
         }
+
 
         //-----------------------Salones Endpoints-------------------------------------------------------//
         [HttpPost("salon")]
@@ -1120,7 +1133,8 @@ namespace RackDAT_API.Controllers
                 comentario = request.comentario,
                 id_tipo_solicitud = request.tipo_solicitud,
                 id_estatus_solicitud = 3,
-                fecha_actualizacion = DateTime.Now,
+                aprobacion_tecnico = 3,
+                aprobacion_coordinador = 3,
                 fecha_pedido = DateTime.Now
             };
 
@@ -1159,7 +1173,6 @@ namespace RackDAT_API.Controllers
             {
                 id = newSolicitud.folio,
                 fecha_pedido = newSolicitud.fecha_pedido,
-                fecha_actualizacion = newSolicitud.fecha_actualizacion,
                 comentario = newSolicitud.comentario,
                 tipo_solicitud = tipo_solicitud,
                 estatus = estatus,
@@ -1219,6 +1232,8 @@ namespace RackDAT_API.Controllers
 
                 var nombre_lab = "";
 
+                LabResponse lab = new LabResponse { };
+
                 if (solicitud.id_tipo_solicitud == 1)
                 {
                     var cantidad_equipos_contenido = await _supabaseClient.Rpc("obtener_cantidad", new Dictionary<string, object> { { "folio_input", folio } });
@@ -1226,22 +1241,27 @@ namespace RackDAT_API.Controllers
                 }
                 else if(solicitud.id_tipo_solicitud == 3)
                 {
-                    var nombre_lab_contenido = await _supabaseClient.Rpc("obtener_lab", new Dictionary<string, object> { { "folio_input", folio } });
-                    nombre_lab = nombre_lab_contenido.Content.Trim('"');
+                    var lab_id = await _supabaseClient.Rpc("obtener_lab", new Dictionary<string, object> { { "folio_input", folio } });
+                    HttpResponseMessage lab_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/lab/id:int?id=" + lab_id);
+                    string lab_contenido = await lab_res.Content.ReadAsStringAsync();
+                    lab = JsonConvert.DeserializeObject<LabResponse>(lab_contenido);
+                    if (lab == null)
+                    {
+                        return BadRequest("Hubo un error al recibir el laboratorio");
+                    }
                 }
 
                 sol_equipoResponse.Add(new SolicitudResponse
                 {
                     id = folio,
                     fecha_pedido = solicitud.fecha_pedido,
-                    fecha_actualizacion = solicitud.fecha_actualizacion,
                     comentario = solicitud.comentario,
                     imagen_muestra = imagen_response,
                     tipo_solicitud = tipo_solicitud,
                     estatus = estatus,
                     usuario = usuario,
                     cantidad_equipos = cantidad_equipos,
-                    nombre_lab = nombre_lab
+                    lab = lab
                 }
                 );
             }
@@ -1299,6 +1319,8 @@ namespace RackDAT_API.Controllers
 
                 var nombre_lab = "";
 
+                LabResponse lab = new LabResponse { };
+
                 if (solicitud.id_tipo_solicitud == 1)
                 {
                     var cantidad_equipos_contenido = await _supabaseClient.Rpc("obtener_cantidad", new Dictionary<string, object> { { "folio_input", folio } });
@@ -1306,22 +1328,27 @@ namespace RackDAT_API.Controllers
                 }
                 else if (solicitud.id_tipo_solicitud == 3)
                 {
-                    var nombre_lab_contenido = await _supabaseClient.Rpc("obtener_lab", new Dictionary<string, object> { { "folio_input", folio } });
-                    nombre_lab = nombre_lab_contenido.Content.Trim('"');
+                    var lab_id = await _supabaseClient.Rpc("obtener_lab", new Dictionary<string, object> { { "folio_input", folio } });                    
+                    HttpResponseMessage lab_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/lab/id:int?id=" + lab_id);
+                    string lab_contenido = await lab_res.Content.ReadAsStringAsync();
+                    lab  = JsonConvert.DeserializeObject<LabResponse>(lab_contenido);
+                    if (lab == null)
+                    {
+                        return BadRequest("Hubo un error al recibir el laboratorio");
+                    }
                 }
 
                 sol_equipoResponse.Add(new SolicitudResponse
                 {
                     id = folio,
                     fecha_pedido = solicitud.fecha_pedido,
-                    fecha_actualizacion = solicitud.fecha_actualizacion,
                     comentario = solicitud.comentario,
                     imagen_muestra = imagen_response,
                     tipo_solicitud = tipo_solicitud,
                     estatus = estatus,
                     usuario = usuario,
                     cantidad_equipos = cantidad_equipos,
-                    nombre_lab = nombre_lab
+                    lab = lab
                 }
                 );
             }
@@ -1329,8 +1356,8 @@ namespace RackDAT_API.Controllers
 
         }
 
-        [HttpPut("solicitud-verificar/id:int")] //aceptar o rechazar solicitud
-        public async Task<ActionResult> verificarSolicitud(int id, bool verificacion)
+        [HttpPatch("solicitud-verificar/id:int")] //aceptar o rechazar solicitud
+        public async Task<ActionResult> verificarSolicitud(int id, bool verificacion, int usuarioID)
         {
             var newEstatus = 3;
             if (verificacion)
@@ -1342,8 +1369,104 @@ namespace RackDAT_API.Controllers
                 newEstatus = 7;
             }
 
-            var update = await _supabaseClient.From<Solicitud>().Where(n => n.folio == id).Set(x => x.id_estatus_solicitud, newEstatus).Update();
+            UsuarioResponse usuario;
+            HttpResponseMessage usuario_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/usuario/id:int?id=" + usuarioID);
+            string usuarioContenido = await usuario_res.Content.ReadAsStringAsync();
+            usuario = JsonConvert.DeserializeObject<UsuarioResponse>(usuarioContenido);
+            if (usuario == null)
+            {
+                return BadRequest("Hubo un error al recibir el tipo de solicitud");
+            }
 
+
+            if (usuario.tipo_usuario.id == 3)
+            {
+                await _supabaseClient.From<Solicitud>().Where(n => n.folio == id).Set(x => x.aprobacion_tecnico, newEstatus).Update();
+            }
+            else if(usuario.tipo_usuario.id == 4)
+            {
+                await _supabaseClient.From<Solicitud>().Where(n => n.folio == id).Set(x => x.aprobacion_coordinador, newEstatus).Update();
+            }
+            else
+            {
+                ActionResult GetTeapot = new ObjectResult("I'm a teapot")
+                {
+                    StatusCode = 418
+                };
+                return GetTeapot;
+            }
+
+            var response = await _supabaseClient.From<Solicitud>().Where(n => n.folio == id).Get();
+            var solicitud = response.Models.FirstOrDefault();
+            if (solicitud is null)
+            {
+                return BadRequest("Hubo un error");
+            }
+            TipoSolicitudResponse tipo_solicitud;
+            HttpResponseMessage tipoSolicitud_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/tipo-solicitud/id:int?id=" + solicitud.id_tipo_solicitud);
+            string tipoSolicitudcontenido = await tipoSolicitud_res.Content.ReadAsStringAsync();
+            tipo_solicitud = JsonConvert.DeserializeObject<TipoSolicitudResponse>(tipoSolicitudcontenido);
+            if (tipo_solicitud == null)
+            {
+                return BadRequest("Hubo un error al recibir el tipo de solicitud");
+            }
+
+            EstatusResponse estatus;
+            HttpResponseMessage estatus_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/estatus-solicitud/id:int?id=" + solicitud.id_estatus_solicitud);
+            string estatus_contenido = await estatus_res.Content.ReadAsStringAsync();
+            estatus = JsonConvert.DeserializeObject<EstatusResponse>(estatus_contenido);
+            if (estatus == null)
+            {
+                return BadRequest("Hubo un error al recibir el estatus");
+            }
+
+            var folio = solicitud.folio;
+            var tipo_solicitud_int = solicitud.id_tipo_solicitud;
+
+            var imagen_contenido = await _supabaseClient.Rpc("obtener_imagen", new Dictionary<string, object> { { "folio_input", folio }, { "tipo_solicitud_input", tipo_solicitud_int } });
+            var imagen_response = imagen_contenido.Content.Trim('"');
+
+            var cantidad_equipos = 0;
+
+            var nombre_lab = "";
+
+            LabResponse lab = new LabResponse { };
+
+            if (solicitud.id_tipo_solicitud == 1)
+            {
+                var cantidad_equipos_contenido = await _supabaseClient.Rpc("obtener_cantidad", new Dictionary<string, object> { { "folio_input", folio } });
+                cantidad_equipos = int.Parse(cantidad_equipos_contenido.Content.Trim('"'));
+            }
+            else if (solicitud.id_tipo_solicitud == 3)
+            {
+                var lab_id = await _supabaseClient.Rpc("obtener_lab", new Dictionary<string, object> { { "folio_input", folio } });
+                HttpResponseMessage lab_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/lab/id:int?id=" + lab_id.Content);
+                string lab_contenido = await lab_res.Content.ReadAsStringAsync();
+                lab = JsonConvert.DeserializeObject<LabResponse>(lab_contenido);
+                if (lab == null)
+                {
+                    return BadRequest("Hubo un error al recibir el laboratorio");
+                }
+            }
+
+            var solicitudResponse = new SolicitudResponse
+            {
+                id = folio,
+                fecha_pedido = solicitud.fecha_pedido,
+                comentario = solicitud.comentario,
+                imagen_muestra = imagen_response,
+                tipo_solicitud = tipo_solicitud,
+                estatus = estatus,
+                usuario = usuario,
+                cantidad_equipos = cantidad_equipos,
+                lab = lab
+            };
+            return Ok(solicitudResponse);
+        }
+
+        [HttpGet("tarjeta/solicitud/id:int")] //Obtener una solicitud junto con sus atributo formato de tarjeta
+        public async Task<ActionResult> getTarjetaSolicitudID(int id)
+        {
             var response = await _supabaseClient.From<Solicitud>().Where(n => n.folio == id).Get();
             var solicitud = response.Models.FirstOrDefault();
             if (solicitud is null)
@@ -1385,7 +1508,7 @@ namespace RackDAT_API.Controllers
 
             var cantidad_equipos = 0;
 
-            var nombre_lab = "";
+            LabResponse lab = new LabResponse { };
 
             if (solicitud.id_tipo_solicitud == 1)
             {
@@ -1394,84 +1517,182 @@ namespace RackDAT_API.Controllers
             }
             else if (solicitud.id_tipo_solicitud == 3)
             {
-                var nombre_lab_contenido = await _supabaseClient.Rpc("obtener_lab", new Dictionary<string, object> { { "folio_input", folio } });
-                nombre_lab = nombre_lab_contenido.Content.Trim('"');
+                var lab_id = await _supabaseClient.Rpc("obtener_lab", new Dictionary<string, object> { { "folio_input", folio } });
+                HttpResponseMessage lab_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/lab/id:int?id=" + lab_id.Content);
+                string lab_contenido = await lab_res.Content.ReadAsStringAsync();
+                lab = JsonConvert.DeserializeObject<LabResponse>(lab_contenido);
+                Console.WriteLine(lab_id);
+                if (lab == null)
+                {
+                    return BadRequest("Hubo un error al recibir el laboratorio");
+                }
             }
 
             var solicitudResponse = new SolicitudResponse
             {
                 id = folio,
                 fecha_pedido = solicitud.fecha_pedido,
-                fecha_actualizacion = solicitud.fecha_actualizacion,
                 comentario = solicitud.comentario,
                 imagen_muestra = imagen_response,
                 tipo_solicitud = tipo_solicitud,
                 estatus = estatus,
                 usuario = usuario,
                 cantidad_equipos = cantidad_equipos,
-                nombre_lab = nombre_lab
+                lab = lab
             };
             return Ok(solicitudResponse);
         }
 
-        
-
-
-        //---------------------------------------Solicitud Equipos-------------------------------------------------//
-        [HttpGet("solicitudes-equipo")]
-        public async Task<IActionResult> getSolicitudesEquipo()
+        [HttpGet("solicitud/id:int")] //Obtener una solicitud junto con sus atributo -------------------------------------------------------
+        public async Task<ActionResult> getSolicitudID(int id)
         {
-            var response = await _supabaseClient.From<Solicitud>().Where(n => n.id_tipo_solicitud == 1 && n.id_estatus_solicitud == 3).Get();
-            var sol_equipoContenido = response.Models;
-            if (sol_equipoContenido is null)
+            var response = await _supabaseClient.From<Solicitud>().Where(n => n.folio == id).Get();
+            var solicitud = response.Models.FirstOrDefault();
+            if (solicitud is null)
             {
-
-                return NotFound("No hay solicitudes de equipos por desplegar");
+                return BadRequest("Hubo un error");
+            }
+            TipoSolicitudResponse tipo_solicitud;
+            HttpResponseMessage tipoSolicitud_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/tipo-solicitud/id:int?id=" + solicitud.id_tipo_solicitud);
+            string tipoSolicitudcontenido = await tipoSolicitud_res.Content.ReadAsStringAsync();
+            tipo_solicitud = JsonConvert.DeserializeObject<TipoSolicitudResponse>(tipoSolicitudcontenido);
+            if (tipo_solicitud == null)
+            {
+                return BadRequest("Hubo un error al recibir el tipo de solicitud");
             }
 
-            List<SolicitudResponse> sol_equipoResponse = new List<SolicitudResponse>();
-            foreach (Solicitud solicitud in sol_equipoContenido)
+            EstatusResponse estatus;
+            HttpResponseMessage estatus_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/estatus-solicitud/id:int?id=" + solicitud.id_estatus_solicitud);
+            string estatus_contenido = await estatus_res.Content.ReadAsStringAsync();
+            estatus = JsonConvert.DeserializeObject<EstatusResponse>(estatus_contenido);
+            if (estatus == null)
             {
-                TipoSolicitudResponse tipo_solicitud;
-                HttpResponseMessage tipoSolicitud_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/tipo-solicitud/id:int?id=" + solicitud.id_tipo_solicitud);
-                string tipoSolicitudcontenido = await tipoSolicitud_res.Content.ReadAsStringAsync();
-                tipo_solicitud = JsonConvert.DeserializeObject<TipoSolicitudResponse>(tipoSolicitudcontenido);
-                if (tipo_solicitud == null)
-                {
-                    return BadRequest("Hubo un error al recibir el tipo de solicitud");
-                }
+                return BadRequest("Hubo un error al recibir el estatus");
+            }
 
-                EstatusResponse estatus;
-                HttpResponseMessage estatus_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/estatus-solicitud/id:int?id=" + solicitud.id_estatus_solicitud);
-                string estatus_contenido = await estatus_res.Content.ReadAsStringAsync();
-                estatus = JsonConvert.DeserializeObject<EstatusResponse>(estatus_contenido);
-                if (estatus == null)
-                {
-                    return BadRequest("Hubo un error al recibir el estatus");
-                }
+            UsuarioResponse usuario;
+            HttpResponseMessage usuario_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/usuario/id:int?id=" + solicitud.id_usuario);
+            string usuario_contenido = await usuario_res.Content.ReadAsStringAsync();
+            usuario = JsonConvert.DeserializeObject<UsuarioResponse>(usuario_contenido);
+            if (usuario == null)
+            {
+                return BadRequest("Hubo un error al recibir el usuario");
+            }
 
-                UsuarioResponse usuario;
-                HttpResponseMessage usuario_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/usuario/id:int?id=" + solicitud.id_usuario);
-                string usuario_contenido = await usuario_res.Content.ReadAsStringAsync();
-                usuario = JsonConvert.DeserializeObject<UsuarioResponse>(usuario_contenido);
-                if (usuario == null)
+            var folio = solicitud.folio;
+            var tipo_solicitud_int = solicitud.id_tipo_solicitud;
+
+            LabResponse lab = new LabResponse { };
+            List<EquipoResponse> equipoResponse = new List<EquipoResponse>();
+
+            DateTime fecha_salida = new DateTime(2023, 5, 10);
+            DateTime fecha_vuelta = new DateTime(2023, 5, 10);
+            int personas = 0;
+
+            if (solicitud.id_tipo_solicitud == 1) //equipos
+            {
+                var response_equipos = await _supabaseClient.From<Solicitud_Equipo>().Where(n => n.folio == id).Get();
+                var solicitud_equipos = response_equipos.Models;
+                if (solicitud_equipos is null)
+                {
+                    return BadRequest("Hubo un error");
+                }
+                fecha_salida = solicitud_equipos[0].fecha_salida;
+                fecha_vuelta = solicitud_equipos[0].fecha_vuelta;
+                foreach (Solicitud_Equipo sol_equipo in solicitud_equipos)
+                {
+                    EquipoResponse equipo;
+                    HttpResponseMessage equipo_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/equipo/id:int?id=" + sol_equipo.equipo);
+                    string equipo_contenido = await equipo_res.Content.ReadAsStringAsync();
+                    equipo = JsonConvert.DeserializeObject<EquipoResponse>(equipo_contenido);
+                    if (equipo == null)
+                    {
+                        return BadRequest("Hubo un error al recibir el usuario");
+                    }
+                    equipoResponse.Add(equipo);
+                }
+             }
+            else if (solicitud.id_tipo_solicitud == 3) //labs
+            {
+                var response_lab = await _supabaseClient.From<Solicitud_Lab>().Where(n => n.folio == id).Get();
+                var solicitud_lab = response_lab.Models.FirstOrDefault();
+                if (solicitud_lab is null)
+                {
+                    return BadRequest("Hubo un error la recibir el laboratorio");
+                }
+                HttpResponseMessage lab_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/lab/id:int?id=" + solicitud_lab.laboratorio);
+                string lab_contenido = await lab_res.Content.ReadAsStringAsync();
+                lab = JsonConvert.DeserializeObject<LabResponse>(lab_contenido);
+                if (lab == null)
                 {
                     return BadRequest("Hubo un error al recibir el usuario");
                 }
-
-                sol_equipoResponse.Add(new SolicitudResponse
-                {
-                    id = solicitud.folio,
-                    fecha_pedido = solicitud.fecha_pedido,
-                    fecha_actualizacion = solicitud.fecha_actualizacion,
-                    comentario = solicitud.comentario,
-                    tipo_solicitud = tipo_solicitud,
-                    estatus = estatus,
-                    usuario = usuario,
-                }
-                );
+                fecha_salida = solicitud_lab.fecha_salida;
+                fecha_vuelta = solicitud_lab.fecha_vuelta;
+                personas = solicitud_lab.cantidad_personas;
             }
-            return Ok(sol_equipoResponse);
+
+            var solicitudResponse = new SolicitudResponse
+            {
+                id = folio,
+                fecha_pedido = solicitud.fecha_pedido,
+                fecha_salida = fecha_salida,
+                fecha_vuelta = fecha_vuelta,
+                comentario = solicitud.comentario,
+                tipo_solicitud = tipo_solicitud,
+                estatus = estatus,
+                usuario = usuario,
+                lab = lab,
+                equipos = equipoResponse,
+                cantidad_personas = personas
+            };
+            return Ok(solicitudResponse);
+        }
+
+
+        //---------------------------------------Solicitud Lab-------------------------------------------------// Porque estoy bien wey y este era el de equipos
+        [HttpPost("solicitud/lab")]
+        public async Task<IActionResult> postSolicitudLab(CreateSolicitudLabRequest request)
+        {
+            var solicitud_lab = new Solicitud_Lab
+            {
+                folio = request.folio,
+                laboratorio = request.lab,
+                fecha_salida = request.inicio,
+                fecha_vuelta = request.final,
+                cantidad_personas = request.cantidad_personas
+            };
+            var response = await _supabaseClient.From<Solicitud_Lab>().Insert(solicitud_lab);
+            var sol_lab = response.Models.FirstOrDefault();
+            if (sol_lab is null)
+            {
+                return NotFound("hubo un error al crear la solicitud de laboratorio");
+            }
+            HttpResponseMessage lab_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/lab/id:int?id=" + sol_lab.laboratorio);
+            string lab_contenido = await lab_res.Content.ReadAsStringAsync();
+            LabResponse lab = JsonConvert.DeserializeObject<LabResponse>(lab_contenido);
+            if (lab == null)
+            {
+                return BadRequest("Hubo un error al recibir el laboratorio");
+            }
+            HttpResponseMessage solicitud_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/solicitud/id:int?id=" + sol_lab.folio);
+            string solicitud_contenido = await solicitud_res.Content.ReadAsStringAsync();
+            SolicitudResponse solicitud = JsonConvert.DeserializeObject<SolicitudResponse>(solicitud_contenido);
+            if (solicitud == null)
+            {
+                return BadRequest("Hubo un error al recibir la solicitud");
+            }
+
+            var sol_labResponse = new SolicitudLabResponse
+            {
+                inicio = sol_lab.fecha_salida,
+                final = sol_lab.fecha_vuelta,
+                cantidad_personas = sol_lab.cantidad_personas,
+                lab = lab,
+                folio = solicitud
+            };
+                        
+            return Ok(sol_labResponse);
         }
 
         //---------------------------------------Solicitud Lab-------------------------------------------------//
@@ -1520,7 +1741,6 @@ namespace RackDAT_API.Controllers
                 {
                     id = solicitud.folio,
                     fecha_pedido = solicitud.fecha_pedido,
-                    fecha_actualizacion = solicitud.fecha_actualizacion,
                     comentario = solicitud.comentario,
                     tipo_solicitud = tipo_solicitud,
                     estatus = estatus,
