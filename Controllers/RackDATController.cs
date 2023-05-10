@@ -1662,15 +1662,12 @@ namespace RackDAT_API.Controllers
                 fecha_vuelta = request.final,
                 cantidad_personas = request.cantidad_personas
             };
-
             var response = await _supabaseClient.From<Solicitud_Lab>().Insert(solicitud_lab);
             var sol_lab = response.Models.FirstOrDefault();
             if (sol_lab is null)
             {
-
                 return NotFound("hubo un error al crear la solicitud de laboratorio");
             }
-
             HttpResponseMessage lab_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/lab/id:int?id=" + sol_lab.laboratorio);
             string lab_contenido = await lab_res.Content.ReadAsStringAsync();
             LabResponse lab = JsonConvert.DeserializeObject<LabResponse>(lab_contenido);
