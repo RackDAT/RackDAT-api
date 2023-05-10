@@ -245,9 +245,9 @@ namespace RackDAT_API.Controllers
         }
 
         [HttpPost("usuario/correo")] //usuario por correo
-        public async Task<ActionResult> getUsuarioCorreo(string correo)
+        public async Task<ActionResult> getUsuarioCorreo(CorreoRequest request)
         {
-            var response = await _supabaseClient.From<Usuario>().Where(n => n.correo == correo).Get();
+            var response = await _supabaseClient.From<Usuario>().Where(n => n.correo == request.correo).Get();
             var usuario = response.Models.FirstOrDefault();
             if (usuario is null)
             {
