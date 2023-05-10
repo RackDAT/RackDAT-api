@@ -52,14 +52,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseHttpsRedirection();
+
+app.MapControllers();
+
 app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.UseCors();
-
-app.UseHttpsRedirection();
-
-app.MapControllers();
 
 app.Run();
