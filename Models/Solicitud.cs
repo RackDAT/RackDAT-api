@@ -24,5 +24,9 @@ namespace RackDAT_API.Models
 
         [Required]
         public int id_tipo_solicitud { get; set; }
+        [Column("aprobacion_coordinador")]
+        public int aprobacion_coordinador { get; set; }
+        [Column("aprobacion_tecnico")]
+        public int aprobacion_tecnico { get; set; }
     }
 }

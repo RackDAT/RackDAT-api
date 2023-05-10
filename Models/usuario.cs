@@ -17,7 +17,7 @@ namespace RackDAT_API.Models
 
         public string apellido_mat { get; set; }
 
-        [Required]
+        [Required, Column("correo")]
         public string correo { get; set; }
 
         [Required]

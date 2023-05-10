@@ -11,7 +11,8 @@
         public string comentario { get; set; }
         public string imagen_muestra { get; set; }
         public int cantidad_equipos { get; set; }
-        public string nombre_lab { get; set; }
+        public LabResponse lab { get; set; }
+        public List<EquipoResponse> equipos { get; set; }
 
     }
 }
