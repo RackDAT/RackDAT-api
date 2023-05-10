@@ -2,6 +2,8 @@
 using Postgrest.Attributes;
 using Postgrest.Models;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
+
 namespace RackDAT_API.Models
 {
     [Table("solicitud")]
@@ -23,9 +25,9 @@ namespace RackDAT_API.Models
 
         [Required]
         public int id_tipo_solicitud { get; set; }
-        [Column("aprobacion_coordinador")]
+        [Column("aprobacion_coordinador"), DefaultValue(3)]
         public int aprobacion_coordinador { get; set; }
-        [Column("aprobacion_tecnico")]
+        [Column("aprobacion_tecnico"), DefaultValue(3)]
         public int aprobacion_tecnico { get; set; }
     }
 }
