@@ -11,6 +11,7 @@
         public bool verificado { get; set; }
         public TipoUsuarioResponse tipo_usuario { get; set; }
         public CarreraResponse carrera { get; set; }
+        public string imagen { get; set; }
 
     }
 

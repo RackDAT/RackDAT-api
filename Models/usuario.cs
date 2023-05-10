@@ -30,5 +30,7 @@ namespace RackDAT_API.Models
         public int id_tipo_usuario { get; set; }
         [Required]
         public int id_carrera { get; set; }
+        [Required]
+        public string imagen { get; set; }
     }
 }

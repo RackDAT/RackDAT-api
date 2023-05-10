@@ -131,6 +131,7 @@ namespace RackDAT_API.Controllers
                 clave = request.clave,
                 id_tipo_usuario = request.tipo_usuario,
                 id_carrera = request.carrera,
+                imagen = request.imagen
             };
 
             //Comprobacion que el correo y la clave no esten en uso
@@ -190,7 +191,8 @@ namespace RackDAT_API.Controllers
                 clave = newUsuario.clave,
                 tipo_usuario = tipo_usuario,
                 carrera = carrera,
-                verificado = newUsuario.verificado
+                verificado = newUsuario.verificado,
+                imagen = newUsuario.imagen
             };
 
 
@@ -238,7 +240,8 @@ namespace RackDAT_API.Controllers
                 clave = usuario.clave,
                 tipo_usuario = tipo_usuario,
                 carrera = carrera,
-                verificado = usuario.verificado
+                verificado = usuario.verificado,
+                imagen = usuario.imagen
 
             };
             return Ok(usuarioResponse);
@@ -251,7 +254,7 @@ namespace RackDAT_API.Controllers
             var usuario = response.Models.FirstOrDefault();
             if (usuario is null)
             {
-                return NotFound("No hay usuario registrado con este usuario");
+                return NoContent();
             }
 
             CarreraResponse carrera = new CarreraResponse { };
@@ -285,7 +288,8 @@ namespace RackDAT_API.Controllers
                 clave = usuario.clave,
                 tipo_usuario = tipo_usuario,
                 carrera = carrera,
-                verificado = usuario.verificado
+                verificado = usuario.verificado,
+                imagen = usuario.imagen
 
             };
             return Ok(usuarioResponse);
@@ -336,7 +340,8 @@ namespace RackDAT_API.Controllers
                     clave = usuario.clave,
                     tipo_usuario = tipo_usuario,
                     carrera = carrera,
-                    verificado = usuario.verificado
+                    verificado = usuario.verificado,
+                    imagen = usuario.imagen
                 }
                 );
             }
@@ -354,8 +359,6 @@ namespace RackDAT_API.Controllers
             {
                 return BadRequest("Hubo un error");
             }
-
-
 
             CarreraResponse carrera = new CarreraResponse { };
             TipoUsuarioResponse tipo_usuario = new TipoUsuarioResponse { };
@@ -387,7 +390,8 @@ namespace RackDAT_API.Controllers
                 clave = usuario.clave,
                 tipo_usuario = tipo_usuario,
                 carrera = carrera,
-                verificado = usuario.verificado
+                verificado = usuario.verificado,
+                imagen = usuario.imagen
 
             };
             return Ok(usuarioResponse);
