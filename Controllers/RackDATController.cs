@@ -291,7 +291,57 @@ namespace RackDAT_API.Controllers
             return Ok(usuarioResponse);
         }
 
-        
+        [HttpGet("usuarios")]
+        public async Task<ActionResult> getUsuarios()
+        {
+            var response = await _supabaseClient.From<Usuario>().Get();
+            var usuario_contenido = response.Models;
+            if (usuario_contenido is null)
+            {
+                return NotFound("No hay usuarios por desplegar");
+            }
+
+            List<UsuarioResponse> usuarioResponse = new List<UsuarioResponse>();
+            foreach (Usuario usuario in usuario_contenido)
+            {
+
+                CarreraResponse carrera = new CarreraResponse { };
+                TipoUsuarioResponse tipo_usuario = new TipoUsuarioResponse { };
+
+                //referencia para sacar la carrera
+                HttpResponseMessage carrera_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/carrera/id:int?id=" + usuario.id_carrera);
+                string carrera_contenido = await carrera_res.Content.ReadAsStringAsync();
+                carrera = JsonConvert.DeserializeObject<CarreraResponse>(carrera_contenido);
+                if (carrera == null)
+                {
+                    return BadRequest("Hubo un error");
+                }
+
+                //referencia para sacar el tipo de usuario
+                HttpResponseMessage tipo_usuario_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/tipo-usuario/id:int?id=" + usuario.id_tipo_usuario);
+                string tipo_usuario_contenido = await tipo_usuario_res.Content.ReadAsStringAsync();
+                tipo_usuario = JsonConvert.DeserializeObject<TipoUsuarioResponse>(tipo_usuario_contenido);
+                if (tipo_usuario == null)
+                {
+                    return BadRequest("Hubo un error");
+                }
+
+                usuarioResponse.Add(new UsuarioResponse
+                {
+                    id = usuario.id,
+                    nombre = usuario.nombre,
+                    apellido_pat = usuario.apellido_pat,
+                    apellido_mat = usuario.apellido_mat,
+                    correo = usuario.correo,
+                    clave = usuario.clave,
+                    tipo_usuario = tipo_usuario,
+                    carrera = carrera,
+                    verificado = usuario.verificado
+                }
+                );
+            }
+            return Ok(usuarioResponse);
+        }
 
         [HttpPut("usuario/id:int")]
         public async Task<ActionResult> verificarUsuario(int id, bool verificacion)
@@ -448,6 +498,7 @@ namespace RackDAT_API.Controllers
             return Ok(sol_equipoResponse);
 
         }
+
 
         //-----------------------Salones Endpoints-------------------------------------------------------//
         [HttpPost("salon")]
