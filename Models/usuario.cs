@@ -28,8 +28,10 @@ namespace RackDAT_API.Models
 
         [Required]
         public int id_tipo_usuario { get; set; }
-        [Required]
         public int id_carrera { get; set; }
+
+        [Reference(typeof(Carrera))]
+        public Carrera carrera { get; set; }
         [Required]
         public string imagen { get; set; }
     }

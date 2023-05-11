@@ -1,23 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication.OAuth;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using RackDAT_API.Contracts;
 using RackDAT_API.Models;
-using Supabase;
-using System.Collections;
-using System.Net.Http;
-using System.Reflection;
-using Auth0.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Security.Claims;
-using Microsoft.OpenApi.Models;
-using System.Net;
-
 namespace RackDAT_API.Controllers
 {
     [Route("api/[controller]")]

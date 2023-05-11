@@ -13,23 +13,17 @@ namespace RackDAT_API.Models
     {
         [PrimaryKey("id_equipo", false)]
         public int id { get; set; }
-        [Required]
+        [Column("ns")]
         public string ns { get; set; }
-        [Required]
         public string descripcion { get; set; }
-        [Required]
         public DateOnly fecha_compra { get; set; }
 
-        [Required]
         public string tag { get; set; }
 
-        [Required, Column("id_modelo")]
+         [Column("id_modelo")]
         public int modelo { get; set; }
-        [Required]
         public string imagen { get; set;}
-        [AllowNull]
         public string comentario { get; set; }
-        [Required]
         public int id_estanteria { get; set; }
 
     }

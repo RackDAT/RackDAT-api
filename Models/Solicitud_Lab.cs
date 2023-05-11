@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Postgrest.Attributes;
 using Postgrest.Models;
-using System.ComponentModel.DataAnnotations;
 
 namespace RackDAT_API.Models
 {
