@@ -27,8 +27,7 @@ namespace RackDAT_API.Models
         public int aprobacion_coordinador { get; set; }
         [Column("aprobacion_tecnico")]
         public int aprobacion_tecnico { get; set; }
-        public int cantidad_equipos { get; set; }
-        public List<int>? laboratorio { get; set; }
+        public int? cantidad_equipos { get; set; }
         public string? imagen { get; set; }
         public string? laboratorio_obtenido { get; set; }
     }
