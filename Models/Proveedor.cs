@@ -9,7 +9,7 @@ namespace RackDAT_API.Models
     {
         [PrimaryKey("id_proveedor", false)]
         public int id { get; set; }
-        [Required]
+        [Required, Column("proveedor")]
         public string proveedor { get; set; }
     }
 }

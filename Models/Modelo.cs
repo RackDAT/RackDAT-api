@@ -10,9 +10,11 @@ namespace RackDAT_API.Models
 
         [PrimaryKey("id_modelo", false)]
         public int id { get; set; }
-        [Required]
+        [Required, Column("modelo")]
         public string modelo { get; set; }
-        [Required, Column("id_proveedor")]
-        public int proveedor { get; set; }
+        [Required, Column("id_proveedor"), ]
+        public int id_proveedor { get; set; }
+        [Reference(typeof(Proveedor))]
+        public  Proveedor proveedor { get; set; }
     }
 }

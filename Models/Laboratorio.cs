@@ -14,10 +14,13 @@ namespace RackDAT_API.Models
         [Required]
         public string laboratorio { get; set; }
         [Required, Column("id_salon")]
-        public int salon { get; set; }
-        [Required]
+        public int id_salon { get; set; }
+
+        [Reference(typeof(Salon))]
+        public Salon salon { get; set; }
+        [Required, Column("imagen")]
         public string imagen { get;set; }
-        [Required]
+        [Required, Column("descripcion_lab")]
         public string descripcion_lab { get; set; }
     }
 }

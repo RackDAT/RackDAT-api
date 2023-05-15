@@ -12,7 +12,7 @@ public class CreateEquipoRequest
     [Required]
     public string tag { get; set; }
     [Required]
-    public int modelo { get; set; }    
+    public int id_modelo { get; set; }
     [Required]
     public DateOnly fecha_compra { get; set; }
     [Required]

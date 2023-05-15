@@ -30,7 +30,7 @@ namespace RackDAT_API.Controllers
                 descripcion = request.descripcion,
                 fecha_compra = request.fecha_compra,
                 tag = request.tag,
-                modelo = request.modelo,
+                id_modelo = request.id_modelo,
                 imagen = request.imagen,
                 comentario = request.comentario,
                 id_estanteria = request.estanteria
@@ -72,30 +72,14 @@ namespace RackDAT_API.Controllers
             var modelo = new Modelo
             {
                 modelo = request.modelo,
-                proveedor = request.proveedor
+                id_proveedor = request.proveedor
             };
 
             var response = await _supabaseClient.From<Modelo>().Insert(modelo);
 
             var newModelo = response.Models.First();
 
-            ProveedorResponse proveedor;
-            HttpResponseMessage proveedor_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/proveedor/id:int?id=" + modelo.proveedor);
-            string proveedor_contenido = await proveedor_res.Content.ReadAsStringAsync();
-            proveedor = JsonConvert.DeserializeObject<ProveedorResponse>(proveedor_contenido);
-            if (proveedor == null)
-            {
-                return BadRequest("Hubo un error");
-            }
-
-            var modeloResponse = new ModeloResponse
-            {
-                id = newModelo.id,
-                modelo = newModelo.modelo,
-                proveedor = proveedor
-            };
-
-            return Ok(modeloResponse);
+            return Ok(JsonConvert.SerializeObject(newModelo));
         }
 
         [HttpGet("modelo/id:int")]
@@ -107,56 +91,21 @@ namespace RackDAT_API.Controllers
             {
                 return NotFound("Modelo no encontrada");
             }
-            ProveedorResponse proveedor;
-            HttpResponseMessage proveedor_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/proveedor/id:int?id=" + modelo.proveedor);
-            string proveedor_contenido = await proveedor_res.Content.ReadAsStringAsync();
-            proveedor = JsonConvert.DeserializeObject<ProveedorResponse>(proveedor_contenido);
-            if (proveedor == null)
-            {
-                return BadRequest("Hubo un error");
-            }
-
-            var modeloRespoonse = new ModeloResponse
-            {
-                id = modelo.id,
-                modelo = modelo.modelo,
-                proveedor = proveedor
-            };
-            return Ok(modeloRespoonse);
+            return Ok(JsonConvert.SerializeObject(modelo));
         }
 
         [HttpGet("modelos")]
         public async Task<IActionResult> getModelos()
         {
             var response = await _supabaseClient.From<Modelo>().Get();
-            var modeloContenido = response.Models;
-            if (modeloContenido is null)
+            var modelos = response.Models;
+            if (modelos is null)
             {
 
                 return NotFound("No hay modelos por desplegar");
             }
 
-            List<ModeloResponse> modeloResponse = new List<ModeloResponse>();
-            foreach (Modelo modelo in modeloContenido)
-            {
-                ProveedorResponse proveedor;
-                HttpResponseMessage proveedor_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/proveedor/id:int?id=" + modelo.proveedor);
-                string proveedor_contenido = await proveedor_res.Content.ReadAsStringAsync();
-                proveedor = JsonConvert.DeserializeObject<ProveedorResponse>(proveedor_contenido);
-                if (proveedor == null)
-                {
-                    return BadRequest("Hubo un error");
-                }
-
-                modeloResponse.Add(new ModeloResponse
-                {
-                    id = modelo.id,
-                    modelo = modelo.modelo,
-                    proveedor = proveedor
-                }
-                );
-            }
-            return Ok(modeloResponse);
+            return Ok(JsonConvert.SerializeObject(modelos));
         }
 
         //-----------------------Proveedores-------------------------------------------------------//
@@ -187,16 +136,8 @@ namespace RackDAT_API.Controllers
         {
             var response = await _supabaseClient.From<Proveedor>().Where(n => n.id == id).Get();
             var proveedor = response.Models.FirstOrDefault();
-            if (proveedor is null)
-            {
-                return NotFound("Proveedor no encontrado");
-            }
-            var proveedorResponse = new ProveedorResponse
-            {
-                id = proveedor.id,
-                proveedor = proveedor.proveedor
-            };
-            return Ok(proveedorResponse);
+
+            return Ok(JsonConvert.SerializeObject(proveedor));
         }
 
         [HttpGet("proveedores")]

@@ -25,7 +25,7 @@ namespace RackDAT_API.Controllers
             var laboratorio = new Laboratorio
             {
                 laboratorio = request.lab,
-                salon = request.salon,
+                id_salon = request.salon,
                 imagen = request.imagen,
                 descripcion_lab = request.descripcion
 

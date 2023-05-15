@@ -9,7 +9,7 @@ namespace RackDAT_API.Models
     {
         [PrimaryKey("id_estatus_solicitud", false)]
         public int id { get; set; }
-        [Required]
+        [Required, Column("estatus_solicitud")]
         public string estatus_solicitud { get; set; }
        
     }

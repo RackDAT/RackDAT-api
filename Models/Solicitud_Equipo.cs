@@ -16,9 +16,6 @@ namespace RackDAT_API.Models
         [Reference(typeof(Solicitud))]
         public Solicitud solicitud { get; set; }
 
-        //[Reference(typeof(Solicitud))]
-        //public List<Solicitud> solicitud { get; set; }
-
         [PrimaryKey("id_equipo")]
         public int id_equipo { get; set; }
 

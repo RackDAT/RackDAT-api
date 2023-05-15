@@ -11,11 +11,14 @@ namespace RackDAT_API.Models
     {
         [PrimaryKey("id_estanteria", false)]
         public int id { get; set; }
-        [Required]
+        [Required, Column("estanteria")]
         public string estanteria { get; set; }
-        public string color { get; set; }
+        [Column("color")]
+        public string? color { get; set; }
 
-        [Required]
+        [Required, Column("id_laboratorio")]
         public int id_laboratorio { get; set; }
+        [Reference(typeof(Laboratorio))]
+        public Laboratorio laboratorio { get; set; }
     }
 }

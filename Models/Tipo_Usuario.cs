@@ -10,7 +10,7 @@ namespace RackDAT_API.Models
     {
         [PrimaryKey("id_tipo_usuario", false)]
         public int id { get; set; }
-        [Required]
+        [Required, Column("tipo_usuario")]
         public string tipo_usuario { get; set; }
     }
 }

@@ -10,9 +10,9 @@ namespace RackDAT_API.Models
     {
         [PrimaryKey("id_salon", false)]
         public int id { get; set; }
-        [Required]
+        [Required, Column("salon")]
         public string salon { get; set; }
-        [Required]
+        [Required, Column("salon")]
         public string descripcion { get; set; }
     }
 }

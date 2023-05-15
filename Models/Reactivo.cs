@@ -9,6 +9,7 @@ namespace RackDAT_API.Models
         [PrimaryKey("id_reactivo", false)]
         public string id { get; set; }
         public string reactivo { get; set; }
+        [Required]
         public int id_unidad_medida { get; set; }
     }
 }

@@ -15,16 +15,27 @@ namespace RackDAT_API.Models
         public int id { get; set; }
         [Column("ns")]
         public string ns { get; set; }
+        [Column("descripcion")]
         public string descripcion { get; set; }
+        [Column("fecha_compra")]
         public DateOnly fecha_compra { get; set; }
-
+        [Column("tag")]
         public string tag { get; set; }
 
-         [Column("id_modelo")]
-        public int modelo { get; set; }
+        [Column("id_modelo")]
+        public int id_modelo { get; set; }
+
+        [Reference(typeof(Modelo))]
+        public Modelo modelo { get; set; }
+        [Column("imagen")]
         public string imagen { get; set;}
+        [Column("comentario")]
         public string comentario { get; set; }
+        [Column("id_estanteria")]
         public int id_estanteria { get; set; }
+
+        [Reference(typeof(Estanteria))]
+        public Estanteria estanteria { get; set; }
 
     }
 }

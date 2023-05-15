@@ -21,28 +21,6 @@ namespace RackDAT_API.Controllers
             _supabaseClient = supabaseClient;
             _httpClient = new HttpClient();
         }
-
-        [HttpGet("GetSolicitudesPendientes")]
-        public async Task<IActionResult> getSolicitudesPendientesB()
-        {
-            var responseSolicitudesEquipo = await _supabaseClient.From<Solicitud_Equipo>().Get();
-            var solicitudesEquipo = responseSolicitudesEquipo.Models;
-            var responseSolicitudesLaboratorio = await _supabaseClient.From<Solicitud_Lab>().Get();
-            var solicitudesLaboratorio = responseSolicitudesLaboratorio.Models;
-            var response = new { equipos = solicitudesEquipo, laboratorios = solicitudesLaboratorio };
-
-            var GroupedSolicitudesEquipos = new Dictionary<int, Solicitud_Equipo>();
-
-            foreach (Solicitud_Equipo solicitud in solicitudesEquipo)
-            {
-                if (!GroupedSolicitudesEquipos.ContainsKey(solicitud.folio))
-                {
-
-                    GroupedSolicitudesEquipos.Add(solicitud.folio, solicitud);
-                }
-            }
-            return Ok(JsonConvert.SerializeObject(GroupedSolicitudesEquipos.Values));
-        }
         //-------------------------------------------------------------------------------//
 
         [HttpPost("solicitud")] //crear una solicitud
