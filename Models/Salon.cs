@@ -12,7 +12,7 @@ namespace RackDAT_API.Models
         public int id { get; set; }
         [Required, Column("salon")]
         public string salon { get; set; }
-        [Required, Column("salon")]
+        [Required, Column("descripcion")]
         public string descripcion { get; set; }
     }
 }
