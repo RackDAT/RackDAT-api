@@ -100,6 +100,42 @@ namespace RackDAT_API.Controllers
 
             return Ok(JsonConvert.SerializeObject(solicitud));
         }
+        [HttpPost("solicitud/lab")]
+        public async Task<ActionResult> postSolicitudLab(CreateSolicitudLabRequest request)
+        {
+            var solicitud = new Solicitud
+            {
+                id_usuario = request.usuario,
+                comentario = request.comentario,
+                id_tipo_solicitud = 3,
+                id_estatus_solicitud = 3,
+                fecha_pedido = DateTime.Now
+            };
 
+            var response = await _supabaseClient.From<Solicitud>().Insert(solicitud);
+
+            var newSolicitud = response.Models.First();
+
+            var solicitud_lab = new Solicitud_Lab
+            {
+                id_solicitud = newSolicitud.folio,
+                id_laboratorio = request.lab,
+                fecha_salida = request.inicio,
+                fecha_vuelta = request.final,
+                cantidad_personas = request.cantidad_personas
+            };
+
+            var response_lab = await _supabaseClient.From<Solicitud_Lab>().Insert(solicitud_lab);
+            var newSolicitud_lab = response_lab.Models;
+
+            return Ok(JsonConvert.SerializeObject(newSolicitud_lab));
+        }
+        [HttpGet("solicitud/{id}")]
+        public async Task<ActionResult> getSolicitudID(int id)
+        {
+            var response = await _supabaseClient.From<Solicitud_Atributos>().Where(x => x.folio == id).Get();
+            var solicitud = response.Models.FirstOrDefault();
+            return Ok(JsonConvert.SerializeObject(solicitud));
+        }
     }
 }

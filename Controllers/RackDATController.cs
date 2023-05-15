@@ -230,7 +230,7 @@ namespace RackDAT_API.Controllers
 
 
         //---------------------------------------Solicitud Lab-------------------------------------------------// Porque estoy bien wey y este era el de equipos
-        [HttpPost("solicitud/lab")]
+        /*[HttpPost("solicitud/lab")]
         public async Task<IActionResult> postSolicitudLab(CreateSolicitudLabRequest request)
         {
             var solicitud_lab = new Solicitud_Lab
@@ -328,7 +328,7 @@ namespace RackDAT_API.Controllers
                 );
             }
             return Ok(sol_equipoResponse);
-        }
+        }*/
 
 
     }
