@@ -113,5 +113,15 @@ namespace RackDAT_API.Controllers
             return NoContent();
         }
 
+        [HttpGet("solicitudes-historicas/{id}")] //solicitudes historicas de una persona
+        public async Task<ActionResult> getSolicitudesHistoricas(int id)
+        {
+            var response = await _supabaseClient.From<Solicitud_Atributos>().Where(n => n.id_estatus_solicitud != 3 && n.id_usuario == id).Order(n => n.fecha_pedido, Postgrest.Constants.Ordering.Descending).Get();
+            var solicitudes = response.Models;
+
+            return Ok(JsonConvert.SerializeObject(solicitudes));
+
+        }
+
     }
 }

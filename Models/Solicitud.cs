@@ -32,8 +32,8 @@ namespace RackDAT_API.Models
         [Reference(typeof(Tipo_Solicitud))]
         public Tipo_Solicitud tipo_solicitud { get; set; }
         [Column("aprobacion_coordinador")]
-        public int aprobacion_coordinador { get; set; }
+        public bool? aprobacion_coordinador { get; set; }
         [Column("aprobacion_tecnico")]
-        public int aprobacion_tecnico { get; set; }
+        public bool? aprobacion_tecnico { get; set; }
     }
 }
