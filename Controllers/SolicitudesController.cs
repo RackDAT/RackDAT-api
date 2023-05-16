@@ -57,7 +57,7 @@ namespace RackDAT_API.Controllers
         [HttpGet("solicitudes-historicas")] //solicitudes historicas de todos las personas
         public async Task<ActionResult> getSolicitudesHistoricas()
         {
-            var response = await _supabaseClient.From<Solicitud_Atributos>().Where(n => n.id_estatus_solicitud != 3).Order(n => n.fecha_pedido, Postgrest.Constants.Ordering.Descending).Get();
+            var response = await _supabaseClient.From<Solicitud_Atributos>().Order(n => n.fecha_pedido, Postgrest.Constants.Ordering.Descending).Get();
             var solicitudes = response.Models;
 
             return Ok(JsonConvert.SerializeObject(solicitudes));
@@ -82,15 +82,11 @@ namespace RackDAT_API.Controllers
 
             if (usuario.tipo_usuario.id == 3)
             {
-#pragma warning disable CS8603 // Possible null reference return.
                 await _supabaseClient.From<Solicitud>().Where(n => n.folio == id).Set(x => x.aprobacion_tecnico, verificacion).Update();
-#pragma warning restore CS8603 // Possible null reference return.
             }
             else if (usuario.tipo_usuario.id == 4)
             {
-#pragma warning disable CS8603 // Possible null reference return.
                 await _supabaseClient.From<Solicitud>().Where(n => n.folio == id).Set(x => x.aprobacion_coordinador, verificacion).Update();
-#pragma warning restore CS8603 // Possible null reference return.
             }
             else
             {
@@ -148,7 +144,7 @@ namespace RackDAT_API.Controllers
         [HttpGet("solicitudes-historicas/carrera/{id}")] //solicitudes historicas de una carrera
         public async Task<ActionResult> getSolicitudesHistoricasCarrera(int id)
         {
-            var response = await _supabaseClient.From<Solicitud_Atributos>().Where(n => n.id_estatus_solicitud != 3 && n.carrera == id).Order(n => n.fecha_pedido, Postgrest.Constants.Ordering.Descending).Get();
+            var response = await _supabaseClient.From<Solicitud_Atributos>().Where(n => n.carrera == id).Order(n => n.fecha_pedido, Postgrest.Constants.Ordering.Descending).Get();
             var solicitudes = response.Models;
 
             return Ok(JsonConvert.SerializeObject(solicitudes));
@@ -163,6 +159,42 @@ namespace RackDAT_API.Controllers
 
             return Ok(JsonConvert.SerializeObject(solicitudes));
 
+        }
+
+        [HttpPost("solicitud/equipo")] //publicar una solicitud de equipos
+        public async Task<ActionResult> postSolicitudEquipo(CreateSolicitudEquipoRequest request)
+        {
+            var solicitud = new Solicitud
+            {
+                id_usuario = request.usuario,
+                comentario = request.comentario,
+                id_tipo_solicitud = 1,
+                id_estatus_solicitud = 3,
+                fecha_pedido = DateTime.Now
+            };
+            
+            var response = await _supabaseClient.From<Solicitud>().Insert(solicitud);
+
+            var newSolicitud = response.Models.First();
+
+            List<Solicitud_Equipo> solicitudes_response = new List<Solicitud_Equipo>();
+            foreach (int equipo in request.equipos)
+            {
+                var solicitud_equipo = new Solicitud_Equipo
+                {
+                    folio = newSolicitud.folio,
+                    id_equipo = equipo,
+                    fecha_salida = request.salida,
+                    fecha_vuelta = request.vuelta
+                };
+                var response_equipo = await _supabaseClient.From<Solicitud_Equipo>().Insert(solicitud_equipo);
+                var newSolicitud_equipo = response_equipo.Models.First();
+                solicitudes_response.Add(newSolicitud_equipo);
+                
+            }
+
+
+            return Ok(JsonConvert.SerializeObject(solicitudes_response));
         }
 
     }
