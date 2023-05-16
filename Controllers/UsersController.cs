@@ -148,6 +148,23 @@ namespace RackDAT_API.Controllers
             var response = await _supabaseClient.From<Usuario>().Where(n => n.verificado == false).Count(Postgrest.Constants.CountType.Exact);
             return Ok(response);
         }
+
+
+        [HttpGet("usuarios/not-verificados/carrera/{id}")] //ver usuarios no verificados
+        public async Task<ActionResult> getUsuariosNoVerificadosCarrera(int id)
+        {
+            var response = await _supabaseClient.From<Usuario>().Where(n => n.verificado == false && n.id_carrera == id).Get();
+            var usuarios = response.Models;
+            return Ok(JsonConvert.SerializeObject(usuarios));
+        }
+        [HttpGet("usuarios/not-verificados/cantidad/carrera/{id}")] //ver cantidad de usuarios no verificados
+        public async Task<ActionResult> getUsuariosNoVerificadosCarreraInt(int id)
+        {
+            var response = await _supabaseClient.From<Usuario>().Where(n => n.verificado == false && n.id_carrera == id).Count(Postgrest.Constants.CountType.Exact);
+            return Ok(response);
+        }
+
+
         [HttpGet("usuarios/carrera/{id}")] //obtener usuarios por carrera
         public async Task<ActionResult> getUsuariosCarrera(int id)
         {
