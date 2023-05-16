@@ -122,6 +122,19 @@ namespace RackDAT_API.Controllers
             return Ok(JsonConvert.SerializeObject(solicitudes));
 
         }
+        [HttpGet("usuarios/not-verificados")]
+        public async Task<ActionResult> getUsuariosNoVerificados()
+        {
+            var response = await _supabaseClient.From<Usuario>().Where(n => n.verificado == false).Get();
+            var usuarios = response.Models;
+            return Ok(JsonConvert.SerializeObject(usuarios));
+        }
+        [HttpGet("usuarios/not-verificados/cantidad")]
+        public async Task<ActionResult> getUsuariosNoVerificadosInt()
+        {
+            var response = await _supabaseClient.From<Usuario>().Where(n => n.verificado == false).Count(Postgrest.Constants.CountType.Exact);
+            return Ok(response);
+        }
 
     }
 }
