@@ -2,7 +2,9 @@
 using RackDAT_API.Models;
 using RackDAT_API.Contracts;
 using Newtonsoft.Json;
+#pragma warning disable CS0105 // The using directive for 'Microsoft.AspNetCore.Mvc' appeared previously in this namespace
 using Microsoft.AspNetCore.Mvc;
+#pragma warning restore CS0105 // The using directive for 'Microsoft.AspNetCore.Mvc' appeared previously in this namespace
 using System.Collections.Generic;
 
 
@@ -68,7 +70,7 @@ namespace RackDAT_API.Controllers
             return Ok(JsonConvert.SerializeObject(newUsuario));
         }
 
-        [HttpGet("usuario/{id}")]
+        [HttpGet("usuario/{id}")] //get de un usuario por id
         public async Task<ActionResult> getUsuarioID(int id)
         {
             var response = await _supabaseClient.From<Usuario>().Where(n => n.id == id).Get();
@@ -86,7 +88,7 @@ namespace RackDAT_API.Controllers
             return Ok(JsonConvert.SerializeObject(usuario));
         }
 
-        [HttpGet("usuarios")]
+        [HttpGet("usuarios")] //get todos los usuarios
         public async Task<ActionResult> getUsuarios()
         {
             var response = await _supabaseClient.From<Usuario>().Get();
@@ -95,7 +97,7 @@ namespace RackDAT_API.Controllers
             return Ok(JsonConvert.SerializeObject(usuarios));
         }
 
-        [HttpPut("usuario/{id}")]
+        [HttpPut("usuario/{id}")] //verificar un usuario
         public async Task<ActionResult> verificarUsuario(int id, bool verificacion)
         {
             var update = await _supabaseClient.From<Usuario>().Where(n => n.id == id).Set(x => x.verificado, verificacion).Update();
@@ -106,7 +108,7 @@ namespace RackDAT_API.Controllers
             return Ok(usuario);
         }
 
-        [HttpDelete("usuario/{id}")]
+        [HttpDelete("usuario/{id}")] //borrar un usuario
         public async Task<ActionResult> deleteUsuario(int id)
         {
             await _supabaseClient.From<Usuario>().Where(n => n.id == id && n.verificado == false).Delete();
@@ -122,18 +124,36 @@ namespace RackDAT_API.Controllers
             return Ok(JsonConvert.SerializeObject(solicitudes));
 
         }
-        [HttpGet("usuarios/not-verificados")]
+        [HttpGet("solicitudes-pendientes/{id}")] //solicitudes pendientes de una persona
+        public async Task<ActionResult> getSolicitudesPendientes(int id)
+        {
+            var response = await _supabaseClient.From<Solicitud_Atributos>().Where(n => n.id_estatus_solicitud == 3 && n.id_usuario == id).Order(n => n.fecha_pedido, Postgrest.Constants.Ordering.Descending).Get();
+            var solicitudes = response.Models;
+
+            return Ok(JsonConvert.SerializeObject(solicitudes));
+
+        }
+
+
+        [HttpGet("usuarios/not-verificados")] //ver usuarios no verificados
         public async Task<ActionResult> getUsuariosNoVerificados()
         {
             var response = await _supabaseClient.From<Usuario>().Where(n => n.verificado == false).Get();
             var usuarios = response.Models;
             return Ok(JsonConvert.SerializeObject(usuarios));
         }
-        [HttpGet("usuarios/not-verificados/cantidad")]
+        [HttpGet("usuarios/not-verificados/cantidad")] //ver cantidad de usuarios no verificados
         public async Task<ActionResult> getUsuariosNoVerificadosInt()
         {
             var response = await _supabaseClient.From<Usuario>().Where(n => n.verificado == false).Count(Postgrest.Constants.CountType.Exact);
             return Ok(response);
+        }
+        [HttpGet("usuarios/carrera/{id}")] //obtener usuarios por carrera
+        public async Task<ActionResult> getUsuariosCarrera(int id)
+        {
+            var response = await _supabaseClient.From<Usuario>().Where(n => n.id_carrera == id && n.id_tipo_usuario == 7).Get();
+            var usuarios = response.Models;
+            return Ok(JsonConvert.SerializeObject(usuarios));
         }
 
     }

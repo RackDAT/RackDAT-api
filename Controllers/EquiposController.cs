@@ -2,7 +2,9 @@
 using RackDAT_API.Models;
 using RackDAT_API.Contracts;
 using Newtonsoft.Json;
+#pragma warning disable CS0105 // The using directive for 'Microsoft.AspNetCore.Mvc' appeared previously in this namespace
 using Microsoft.AspNetCore.Mvc;
+#pragma warning restore CS0105 // The using directive for 'Microsoft.AspNetCore.Mvc' appeared previously in this namespace
 using System.Collections.Generic;
 
 

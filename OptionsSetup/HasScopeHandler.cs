@@ -11,7 +11,9 @@ namespace RackDAT_API.OptionsSetup
                 return Task.CompletedTask;
 
             // Split the scopes string into an array
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var scopes = context.User.FindFirst(c => c.Type == "scope" && c.Issuer == requirement.Issuer).Value.Split(' ');
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
             // Succeed if the scope array contains the required scope
             if (scopes.Any(s => s == requirement.Scope))

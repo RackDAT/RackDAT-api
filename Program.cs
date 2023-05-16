@@ -18,6 +18,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+#pragma warning disable CS8604 // Possible null reference argument for parameter 'supabaseUrl' in 'Client.Client(string supabaseUrl, string? supabaseKey, SupabaseOptions? options = null)'.
 builder.Services.AddScoped<Supabase.Client>(_ =>
     new Supabase.Client(
         builder.Configuration["SupabaseUrl"],
@@ -27,6 +28,7 @@ builder.Services.AddScoped<Supabase.Client>(_ =>
             AutoRefreshToken = true,
             AutoConnectRealtime = true
         }));
+#pragma warning restore CS8604 // Possible null reference argument for parameter 'supabaseUrl' in 'Client.Client(string supabaseUrl, string? supabaseKey, SupabaseOptions? options = null)'.
 
 
 builder.Services.AddCors(options =>

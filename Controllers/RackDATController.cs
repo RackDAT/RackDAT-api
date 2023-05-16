@@ -52,7 +52,9 @@ namespace RackDAT_API.Controllers
                 TipoSolicitudResponse tipo_solicitud;
                 HttpResponseMessage tipoSolicitud_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/tipo-solicitud/id:int?id=" + solicitud.id_tipo_solicitud);
                 string tipoSolicitudcontenido = await tipoSolicitud_res.Content.ReadAsStringAsync();
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                 tipo_solicitud = JsonConvert.DeserializeObject<TipoSolicitudResponse>(tipoSolicitudcontenido);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
                 if (tipo_solicitud == null)
                 {
                     return BadRequest("Hubo un error al recibir el tipo de solicitud");
@@ -61,7 +63,9 @@ namespace RackDAT_API.Controllers
                 EstatusResponse estatus;
                 HttpResponseMessage estatus_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/estatus-solicitud/id:int?id=" + solicitud.id_estatus_solicitud);
                 string estatus_contenido = await estatus_res.Content.ReadAsStringAsync();
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                 estatus = JsonConvert.DeserializeObject<EstatusResponse>(estatus_contenido);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
                 if (estatus == null)
                 {
                     return BadRequest("Hubo un error al recibir el estatus");
@@ -70,7 +74,9 @@ namespace RackDAT_API.Controllers
                 UsuarioResponse usuario;
                 HttpResponseMessage usuario_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/usuario/id:int?id=" + solicitud.id_usuario);
                 string usuario_contenido = await usuario_res.Content.ReadAsStringAsync();
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                 usuario = JsonConvert.DeserializeObject<UsuarioResponse>(usuario_contenido);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
                 if (usuario == null)
                 {
                     return BadRequest("Hubo un error al recibir el usuario");
@@ -80,25 +86,33 @@ namespace RackDAT_API.Controllers
                 var tipo_solicitud_int = solicitud.id_tipo_solicitud;
 
                 var imagen_contenido = await _supabaseClient.Rpc("obtener_imagen", new Dictionary<string, object> { { "folio_input", folio }, { "tipo_solicitud_input", tipo_solicitud_int } });
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 var imagen_response = imagen_contenido.Content.Trim('"');
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
                 var cantidad_equipos = 0;
 
+#pragma warning disable CS0219 // The variable 'nombre_lab' is assigned but its value is never used
                 var nombre_lab = "";
+#pragma warning restore CS0219 // The variable 'nombre_lab' is assigned but its value is never used
 
                 LabResponse lab = new LabResponse { };
 
                 if (solicitud.id_tipo_solicitud == 1)
                 {
                     var cantidad_equipos_contenido = await _supabaseClient.Rpc("obtener_cantidad", new Dictionary<string, object> { { "folio_input", folio } });
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                     cantidad_equipos = int.Parse(cantidad_equipos_contenido.Content.Trim('"'));
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 }
                 else if (solicitud.id_tipo_solicitud == 3)
                 {
                     var lab_id = await _supabaseClient.Rpc("obtener_lab", new Dictionary<string, object> { { "folio_input", folio } });
                     HttpResponseMessage lab_res = await _httpClient.GetAsync("https://rackdat.onrender.com/api/RackDAT/lab/id:int?id=" + lab_id);
                     string lab_contenido = await lab_res.Content.ReadAsStringAsync();
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                     lab = JsonConvert.DeserializeObject<LabResponse>(lab_contenido);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
                     if (lab == null)
                     {
                         return BadRequest("Hubo un error al recibir el laboratorio");

@@ -4,7 +4,9 @@ using Supabase;
 using RackDAT_API.Models;
 using RackDAT_API.Contracts;
 using Newtonsoft.Json;
+#pragma warning disable CS0105 // The using directive for 'Microsoft.AspNetCore.Mvc' appeared previously in this namespace
 using Microsoft.AspNetCore.Mvc;
+#pragma warning restore CS0105 // The using directive for 'Microsoft.AspNetCore.Mvc' appeared previously in this namespace
 using System.Collections.Generic;
 
 
@@ -80,11 +82,15 @@ namespace RackDAT_API.Controllers
 
             if (usuario.tipo_usuario.id == 3)
             {
+#pragma warning disable CS8603 // Possible null reference return.
                 await _supabaseClient.From<Solicitud>().Where(n => n.folio == id).Set(x => x.aprobacion_tecnico, verificacion).Update();
+#pragma warning restore CS8603 // Possible null reference return.
             }
             else if (usuario.tipo_usuario.id == 4)
             {
+#pragma warning disable CS8603 // Possible null reference return.
                 await _supabaseClient.From<Solicitud>().Where(n => n.folio == id).Set(x => x.aprobacion_coordinador, verificacion).Update();
+#pragma warning restore CS8603 // Possible null reference return.
             }
             else
             {
@@ -100,7 +106,7 @@ namespace RackDAT_API.Controllers
 
             return Ok(JsonConvert.SerializeObject(solicitud));
         }
-        [HttpPost("solicitud/lab")]
+        [HttpPost("solicitud/lab")] //publicar una solicitud de laboratorio
         public async Task<ActionResult> postSolicitudLab(CreateSolicitudLabRequest request)
         {
             var solicitud = new Solicitud
@@ -130,12 +136,34 @@ namespace RackDAT_API.Controllers
 
             return Ok(JsonConvert.SerializeObject(newSolicitud_lab));
         }
-        [HttpGet("solicitud/{id}")]
+        [HttpGet("solicitud/{id}")] //obtener solicitud por id
         public async Task<ActionResult> getSolicitudID(int id)
         {
             var response = await _supabaseClient.From<Solicitud_Atributos>().Where(x => x.folio == id).Get();
             var solicitud = response.Models.FirstOrDefault();
             return Ok(JsonConvert.SerializeObject(solicitud));
         }
+
+
+        [HttpGet("solicitudes-historicas/carrera/{id}")] //solicitudes historicas de una carrera
+        public async Task<ActionResult> getSolicitudesHistoricasCarrera(int id)
+        {
+            var response = await _supabaseClient.From<Solicitud_Atributos>().Where(n => n.id_estatus_solicitud != 3 && n.carrera == id).Order(n => n.fecha_pedido, Postgrest.Constants.Ordering.Descending).Get();
+            var solicitudes = response.Models;
+
+            return Ok(JsonConvert.SerializeObject(solicitudes));
+
+        }
+
+        [HttpGet("solicitudes-pendientes/carrera/{id}")] //solicitudes historicas de una carrera
+        public async Task<ActionResult> getSolicitudesPendientesCarrera(int id)
+        {
+            var response = await _supabaseClient.From<Solicitud_Atributos>().Where(n => n.id_estatus_solicitud == 3 && n.carrera == id).Order(n => n.fecha_pedido, Postgrest.Constants.Ordering.Descending).Get();
+            var solicitudes = response.Models;
+
+            return Ok(JsonConvert.SerializeObject(solicitudes));
+
+        }
+
     }
 }
